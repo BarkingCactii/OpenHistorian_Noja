@@ -23,6 +23,7 @@
 
 using GrafanaAdapters;
 using GSF;
+using GSF.Configuration;
 using GSF.Snap;
 using GSF.Snap.Filters;
 using GSF.Snap.Services;
@@ -104,7 +105,17 @@ namespace openHistorian.Adapters
                         startTime = startTime.BaselinedTimestamp(timeInterval);
                         stopTime = stopTime.BaselinedTimestamp(timeInterval);
 
-                        timeFilter = TimestampSeekFilter.CreateFromIntervalData<HistorianKey>(startTime, stopTime, resolutionInterval, new TimeSpan(TimeSpan.TicksPerMillisecond));
+                        int milliseconds = 1;
+                        try
+                        {
+                            ConfigurationFile configFile = ConfigurationFile.Open(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+                            CategorizedSettingsSection categorizedSettings = configFile.Settings;
+                            CategorizedSettingsElementCollection systemSettings = categorizedSettings["systemSettings"];
+                            string val = systemSettings["HistoryTolerance"].Value;
+                        }
+                        catch { } // something went wrong, so just use original default
+
+                        timeFilter = TimestampSeekFilter.CreateFromIntervalData<HistorianKey>(startTime, stopTime, resolutionInterval, new TimeSpan(TimeSpan.TicksPerMillisecond * milliseconds));
                     }
 
                     // Setup point ID selections

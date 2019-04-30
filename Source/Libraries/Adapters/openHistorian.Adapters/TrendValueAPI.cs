@@ -27,6 +27,7 @@ using System.Data;
 using System.Linq;
 using GSF;
 using GSF.Collections;
+using GSF.Configuration;
 using GSF.Data;
 using GSF.Data.Model;
 using GSF.Snap;
@@ -193,7 +194,19 @@ namespace openHistorian.Adapters
                 startTime = startTime.BaselinedTimestamp(interval);
                 stopTime = stopTime.BaselinedTimestamp(interval);
 
-                timeFilter = TimestampSeekFilter.CreateFromIntervalData<HistorianKey>(startTime, stopTime, resolutionInterval, new TimeSpan(TimeSpan.TicksPerMillisecond));
+                int milliseconds = 1;
+                try
+                {
+                    ConfigurationFile configFile = ConfigurationFile.Open(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+                    CategorizedSettingsSection categorizedSettings = configFile.Settings;
+                    CategorizedSettingsElementCollection systemSettings = categorizedSettings["systemSettings"];
+                    string val = systemSettings["HistoryTolerance"].Value;
+                }
+                catch { } // something went wrong, so just use original default
+
+                timeFilter = TimestampSeekFilter.CreateFromIntervalData<HistorianKey>(startTime, stopTime, resolutionInterval, new TimeSpan(TimeSpan.TicksPerMillisecond * milliseconds));
+
+
             }
 
             Dictionary<ulong, DataRow> metadata = null;
