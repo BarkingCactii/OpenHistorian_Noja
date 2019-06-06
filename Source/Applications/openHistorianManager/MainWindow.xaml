@@ -82,6 +82,7 @@
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
+                    <Image Source="NojaLogo.png" Height="25" VerticalAlignment="Top"/>
                     <TextBlock x:Name="TextBoxTitle" Style="{StaticResource MainTitleStyle}" Margin="5,-10,0,0"/>
                 </StackPanel>
 
