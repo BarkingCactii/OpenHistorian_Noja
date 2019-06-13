@@ -26,13 +26,23 @@
             <LinearGradientBrush x:Key="MainBackgroundBrush" EndPoint="1,0" StartPoint="0,1">
                 <GradientStop Color="#FF082211" Offset="0"/>
                 <GradientStop Color="#FF105533" Offset="0.20"/>
+                <GradientStop Color="#FF082211" Offset="0.60"/>
+                <GradientStop Color="#FF105533" Offset="0.60"/>
+                <GradientStop Color="#FF082211" Offset="0.70"/>
+                <GradientStop Color="#FF105533" Offset="0.80"/>
+                <GradientStop Color="#FF082211" Offset="1"/>
+            </LinearGradientBrush>
+<!--
+            <LinearGradientBrush x:Key="MainBackgroundBrush" EndPoint="1,0" StartPoint="0,1">
+                <GradientStop Color="#FF082211" Offset="0"/>
+                <GradientStop Color="#FF105533" Offset="0.20"/>
                 <GradientStop Color="#FF082211" Offset="0.35"/>
                 <GradientStop Color="#FF105533" Offset="0.50"/>
                 <GradientStop Color="#FF082211" Offset="0.65"/>
                 <GradientStop Color="#FF105533" Offset="0.80"/>
                 <GradientStop Color="#FF082211" Offset="1"/>
             </LinearGradientBrush>
-
+-->
             <LinearGradientBrush x:Key="MenuBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FFB3D6C8" Offset="0"/>
                 <GradientStop Color="#FFE1EEE9" Offset="0.25"/>
@@ -82,7 +92,7 @@
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <Image Source="NojaLogo.png" Height="25" VerticalAlignment="Top"/>
+                    <Image Source="logo_2@2x.png" Height="32" Margin="0,-5,0,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="TextBoxTitle" Style="{StaticResource MainTitleStyle}" Margin="5,-10,0,0"/>
                 </StackPanel>
 
