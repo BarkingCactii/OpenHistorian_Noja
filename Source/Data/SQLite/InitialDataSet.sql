@@ -223,6 +223,7 @@ INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('GPA', 
 INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('UTK', 'University of Tennessee, Knoxville', '', '', 'http://www.utk.edu/');
 INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('SIE', 'Siemens', '', '', 'http://www.siemens.com/');
 INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('EPG', 'Electric Power Group', '', '', 'http://www.electricpowergroup.com/');
+INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('NP', 'Noja Power Pty Ltd', '', '', 'http://www.nojapower.com.au/');
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(2, 'Arbiter-1133A', 'Arbiter 1133A Power Sentinel', 'http://www.arbiter.com/catalog/power/1133a/1133a.php');
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(1, 'ABB-521', 'ABB RES521', 'http://library.abb.com/GLOBAL/SCOT/SCOT296.nsf/VerityDisplay/79B16E5CF206C79CC125712D0074AC6F/$File/1MRK511113-HEN_D_en_Phasor_Measurement_Terminal_RES_521.pdf');
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(8, 'Mehtatech', 'Metha Tech Transcan 2000 IED', 'http://www.mehtatech.com/pdf/IEDbrochMay02b.pdf');
