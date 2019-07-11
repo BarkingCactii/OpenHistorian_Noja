@@ -8,40 +8,20 @@
   z-index: $zindex-tooltip;
   display: block;
   visibility: visible;
+  font-size: 11px;
   line-height: 1.4;
-  font-weight: 500;
   @include opacity(0);
-
-  &.in {
-    @include opacity(100);
-  }
-
-  &.top {
-    margin-top: -3px;
-    padding: 5px 0;
-  }
-
-  &.right {
-    margin-left: 3px;
-    padding: 0 5px;
-  }
-
-  &.bottom {
-    margin-top: 3px;
-    padding: 5px 0;
-  }
-
-  &.left {
-    margin-left: -3px;
-    padding: 0 5px;
-  }
+  &.in     { @include opacity(100); }
+  &.top    { margin-top:  -3px; padding: 5px 0; }
+  &.right  { margin-left:  3px; padding: 0 5px; }
+  &.bottom { margin-top:   3px; padding: 5px 0; }
+  &.left   { margin-left: -3px; padding: 0 5px; }
 }
 
 // Wrapper for the tooltip content
 .tooltip-inner {
   max-width: 400px;
-  padding: 8px 16px;
-  padding: 4px 8px;
+  padding: 8px;
   color: $tooltipColor;
   text-align: center;
   text-decoration: none;
@@ -66,7 +46,6 @@
     border-width: $tooltipArrowWidth $tooltipArrowWidth 0;
     border-top-color: $tooltipArrowColor;
   }
-
   &.right .tooltip-arrow {
     top: 50%;
     left: 0;
@@ -74,7 +53,6 @@
     border-width: $tooltipArrowWidth $tooltipArrowWidth $tooltipArrowWidth 0;
     border-right-color: $tooltipArrowColor;
   }
-
   &.left .tooltip-arrow {
     top: 50%;
     right: 0;
@@ -82,7 +60,6 @@
     border-width: $tooltipArrowWidth 0 $tooltipArrowWidth $tooltipArrowWidth;
     border-left-color: $tooltipArrowColor;
   }
-
   &.bottom .tooltip-arrow {
     top: 0;
     left: 50%;
@@ -93,13 +70,13 @@
 }
 
 .grafana-tooltip {
-  position: absolute;
+  position : absolute;
   top: -1000;
   left: 0;
   color: $tooltipColor;
   padding: 10px;
   font-size: 11pt;
-  font-weight: 200;
+  font-weight : 200;
   background-color: $tooltipBackground;
   border-radius: 5px;
   z-index: 9999;
@@ -107,7 +84,6 @@
   max-height: 600px;
   overflow: hidden;
   line-height: 14px;
-
   a {
     color: $tooltipLinkColor;
   }
@@ -116,3 +92,4 @@
 .grafana-tip {
   padding-left: 5px;
 }
+

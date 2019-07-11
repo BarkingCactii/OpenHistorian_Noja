@@ -4,7 +4,6 @@
   "id": "postgres",
 
   "info": {
-    "description": "PostgreSQL Data Source for Grafana",
     "author": {
       "name": "Grafana Project",
       "url": "https://grafana.com"
@@ -17,10 +16,5 @@
 
   "alerting": true,
   "annotations": true,
-  "metrics": true,
-  "tables": true,
-
-  "queryOptions": {
-    "minInterval": true
-  }
+  "metrics": true
 }

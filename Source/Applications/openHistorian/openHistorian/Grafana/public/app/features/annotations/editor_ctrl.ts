@@ -2,7 +2,6 @@ import angular from 'angular';
 import _ from 'lodash';
 import $ from 'jquery';
 import coreModule from 'app/core/core_module';
-import { DashboardModel } from 'app/features/dashboard/state';
 
 export class AnnotationsEditorCtrl {
   mode: any;
@@ -11,7 +10,6 @@ export class AnnotationsEditorCtrl {
   currentAnnotation: any;
   currentDatasource: any;
   currentIsNew: any;
-  dashboard: DashboardModel;
 
   annotationDefaults: any = {
     name: '',
@@ -22,16 +20,18 @@ export class AnnotationsEditorCtrl {
     hide: false,
   };
 
-  showOptions: any = [{ text: 'All Panels', value: 0 }, { text: 'Specific Panels', value: 1 }];
+  showOptions: any = [
+    {text: 'All Panels', value: 0},
+    {text: 'Specific Panels', value: 1},
+  ];
 
   /** @ngInject */
-  constructor($scope, private datasourceSrv) {
+  constructor(private $scope, private datasourceSrv) {
     $scope.ctrl = this;
 
-    this.dashboard = $scope.dashboard;
     this.mode = 'list';
     this.datasources = datasourceSrv.getAnnotationSources();
-    this.annotations = this.dashboard.annotations.list;
+    this.annotations = $scope.dashboard.annotations.list;
     this.reset();
 
     this.onColorChange = this.onColorChange.bind(this);
@@ -49,7 +49,7 @@ export class AnnotationsEditorCtrl {
     this.currentIsNew = false;
     this.datasourceChanged();
     this.mode = 'edit';
-    $('.tooltip.in').remove();
+    $(".tooltip.in").remove();
   }
 
   reset() {
@@ -62,6 +62,7 @@ export class AnnotationsEditorCtrl {
   update() {
     this.reset();
     this.mode = 'list';
+    this.$scope.broadcastRefresh();
   }
 
   setupNew() {
@@ -69,30 +70,31 @@ export class AnnotationsEditorCtrl {
     this.reset();
   }
 
-  backToList() {
-    this.mode = 'list';
-  }
-
-  move(index, dir) {
-    // @ts-ignore
-    _.move(this.annotations, index, index + dir);
-  }
-
   add() {
     this.annotations.push(this.currentAnnotation);
     this.reset();
     this.mode = 'list';
-    this.dashboard.updateSubmenuVisibility();
+    this.$scope.broadcastRefresh();
+    this.$scope.dashboard.updateSubmenuVisibility();
   }
 
   removeAnnotation(annotation) {
-    const index = _.indexOf(this.annotations, annotation);
+    var index = _.indexOf(this.annotations, annotation);
     this.annotations.splice(index, 1);
-    this.dashboard.updateSubmenuVisibility();
+    this.$scope.dashboard.updateSubmenuVisibility();
+    this.$scope.broadcastRefresh();
   }
 
   onColorChange(newColor) {
     this.currentAnnotation.iconColor = newColor;
+  }
+
+  annotationEnabledChange() {
+    this.$scope.broadcastRefresh();
+  }
+
+  annotationHiddenChanged() {
+    this.$scope.dashboard.updateSubmenuVisibility();
   }
 }
 

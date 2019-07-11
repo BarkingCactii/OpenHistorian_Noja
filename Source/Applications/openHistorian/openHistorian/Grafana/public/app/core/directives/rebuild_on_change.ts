@@ -1,35 +1,34 @@
 import $ from 'jquery';
 import coreModule from '../core_module';
 
-function getBlockNodes(nodes: any[]) {
-  let node = nodes[0];
-  const endNode = nodes[nodes.length - 1];
-  let blockNodes: any[];
-  node = node.nextSibling;
+function getBlockNodes(nodes) {
+  var node = nodes[0];
+  var endNode = nodes[nodes.length - 1];
+  var blockNodes;
 
-  for (let i = 1; node !== endNode && node; i++) {
+  for (var i = 1; node !== endNode && (node = node.nextSibling); i++) {
     if (blockNodes || nodes[i] !== node) {
       if (!blockNodes) {
-        blockNodes = $([].slice.call(nodes, 0, i)) as any;
+        blockNodes = $([].slice.call(nodes, 0, i));
       }
       blockNodes.push(node);
     }
-    node = node.nextSibling;
   }
 
   return blockNodes || nodes;
 }
 
-/** @ngInject */
-function rebuildOnChange($animate: any) {
+/** @ngInject **/
+function rebuildOnChange($animate) {
+
   return {
     multiElement: true,
     terminal: true,
     transclude: true,
     priority: 600,
     restrict: 'E',
-    link: (scope: any, elem: any, attrs: any, ctrl: any, transclude: any) => {
-      let block: any, childScope: any, previousElements: any;
+    link: function(scope, elem, attrs, ctrl, transclude) {
+      var block, childScope, previousElements;
 
       function cleanUp() {
         if (previousElements) {
@@ -42,30 +41,30 @@ function rebuildOnChange($animate: any) {
         }
         if (block) {
           previousElements = getBlockNodes(block.clone);
-          $animate.leave(previousElements).then(() => {
+          $animate.leave(previousElements).then(function() {
             previousElements = null;
           });
           block = null;
         }
       }
 
-      scope.$watch(attrs.property, function rebuildOnChangeAction(value: any, oldValue: any) {
+      scope.$watch(attrs.property, function rebuildOnChangeAction(value, oldValue) {
         if (childScope && value !== oldValue) {
           cleanUp();
         }
 
         if (!childScope && (value || attrs.showNull)) {
-          transclude((clone: any, newScope: any) => {
+          transclude(function(clone, newScope) {
             childScope = newScope;
             clone[clone.length++] = document.createComment(' end rebuild on change ');
-            block = { clone: clone };
+            block = {clone: clone};
             $animate.enter(clone, elem.parent(), elem);
           });
         } else {
           cleanUp();
         }
       });
-    },
+    }
   };
 }
 

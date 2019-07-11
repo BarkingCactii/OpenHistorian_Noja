@@ -1,15 +1,16 @@
 import moment from 'moment';
 
 const intervalMap = {
-  Hourly: { startOf: 'hour', amount: 'hours' },
-  Daily: { startOf: 'day', amount: 'days' },
-  Weekly: { startOf: 'isoWeek', amount: 'weeks' },
-  Monthly: { startOf: 'month', amount: 'months' },
-  Yearly: { startOf: 'year', amount: 'years' },
+  "Hourly":  { startOf: 'hour',     amount: 'hours'},
+  "Daily":   { startOf: 'day',      amount: 'days'},
+  "Weekly":  { startOf: 'isoWeek',  amount: 'weeks'},
+  "Monthly": { startOf: 'month',    amount: 'months'},
+  "Yearly":  { startOf: 'year',     amount: 'years'},
 };
 
 export class IndexPattern {
-  constructor(private pattern, private interval: string | null) {}
+
+  constructor(private pattern, private interval: string | null) { }
 
   getIndexForToday() {
     if (this.interval) {
@@ -24,15 +25,10 @@ export class IndexPattern {
       return this.pattern;
     }
 
-    const intervalInfo = intervalMap[this.interval];
-    const start = moment(from)
-      .utc()
-      .startOf(intervalInfo.startOf);
-    const endEpoch = moment(to)
-      .utc()
-      .startOf(intervalInfo.startOf)
-      .valueOf();
-    const indexList = [];
+    var intervalInfo = intervalMap[this.interval];
+    var start = moment(from).utc().startOf(intervalInfo.startOf);
+    var endEpoch = moment(to).utc().startOf(intervalInfo.startOf).valueOf();
+    var indexList = [];
 
     while (start.valueOf() <= endEpoch) {
       indexList.push(start.format(this.pattern));
@@ -42,3 +38,4 @@ export class IndexPattern {
     return indexList;
   }
 }
+

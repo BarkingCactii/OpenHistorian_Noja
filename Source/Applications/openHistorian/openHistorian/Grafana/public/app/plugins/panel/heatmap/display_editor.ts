@@ -1,3 +1,5 @@
+///<reference path="../../../headers/common.d.ts" />
+
 export class HeatmapDisplayEditorCtrl {
   panel: any;
   panelCtrl: any;

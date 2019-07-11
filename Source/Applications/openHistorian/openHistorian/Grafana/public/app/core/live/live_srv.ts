@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import config from 'app/core/config';
 
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs/Observable';
 
 export class LiveSrv {
   conn: any;
@@ -13,8 +13,8 @@ export class LiveSrv {
   }
 
   getWebSocketUrl() {
-    const l = window.location;
-    return (l.protocol === 'https:' ? 'wss://' : 'ws://') + l.host + config.appSubUrl + '/ws';
+    var l = window.location;
+    return ((l.protocol === "https:") ? "wss://" : "ws://") + l.host + config.appSubUrl + '/ws';
   }
 
   getConnection() {
@@ -30,25 +30,25 @@ export class LiveSrv {
       console.log('Live: connecting...');
       this.conn = new WebSocket(this.getWebSocketUrl());
 
-      this.conn.onclose = (evt: any) => {
-        console.log('Live: websocket onclose', evt);
-        reject({ message: 'Connection closed' });
+      this.conn.onclose = (evt) => {
+        console.log("Live: websocket onclose", evt);
+        reject({message: 'Connection closed'});
 
         this.initPromise = null;
         setTimeout(this.reconnect.bind(this), 2000);
       };
 
-      this.conn.onmessage = (evt: any) => {
+      this.conn.onmessage = (evt) => {
         this.handleMessage(evt.data);
       };
 
-      this.conn.onerror = (evt: any) => {
+      this.conn.onerror = (evt) => {
         this.initPromise = null;
-        reject({ message: 'Connection error' });
-        console.log('Live: websocket error', evt);
+        reject({message: 'Connection error'});
+        console.log("Live: websocket error", evt);
       };
 
-      this.conn.onopen = (evt: any) => {
+      this.conn.onopen = (evt) => {
         console.log('opened');
         this.initPromise = null;
         resolve(this.conn);
@@ -58,15 +58,15 @@ export class LiveSrv {
     return this.initPromise;
   }
 
-  handleMessage(message: any) {
+  handleMessage(message) {
     message = JSON.parse(message);
 
     if (!message.stream) {
-      console.log('Error: stream message without stream!', message);
+      console.log("Error: stream message without stream!", message);
       return;
     }
 
-    const observer = this.observers[message.stream];
+    var observer = this.observers[message.stream];
     if (!observer) {
       this.removeObserver(message.stream, null);
       return;
@@ -83,38 +83,38 @@ export class LiveSrv {
 
     console.log('LiveSrv: Reconnecting');
 
-    this.getConnection().then((conn: any) => {
+    this.getConnection().then(conn => {
       _.each(this.observers, (value, key) => {
-        this.send({ action: 'subscribe', stream: key });
+        this.send({action: 'subscribe', stream: key});
       });
     });
   }
 
-  send(data: any) {
+  send(data) {
     this.conn.send(JSON.stringify(data));
   }
 
-  addObserver(stream: any, observer: any) {
+  addObserver(stream, observer) {
     this.observers[stream] = observer;
 
-    this.getConnection().then((conn: any) => {
-      this.send({ action: 'subscribe', stream: stream });
+    this.getConnection().then(conn => {
+      this.send({action: 'subscribe', stream: stream});
     });
   }
 
-  removeObserver(stream: any, observer: any) {
+  removeObserver(stream, observer) {
     console.log('unsubscribe', stream);
     delete this.observers[stream];
 
-    this.getConnection().then((conn: any) => {
-      this.send({ action: 'unsubscribe', stream: stream });
+    this.getConnection().then(conn => {
+      this.send({action: 'unsubscribe', stream: stream});
     });
   }
 
-  subscribe(streamName: string) {
+  subscribe(streamName) {
     console.log('LiveSrv.subscribe: ' + streamName);
 
-    return Observable.create((observer: any) => {
+    return Observable.create(observer => {
       this.addObserver(streamName, observer);
 
       return () => {
@@ -126,7 +126,8 @@ export class LiveSrv {
     //   this.send({action: 'subscribe', stream: name});
     // });
   }
+
 }
 
-const instance = new LiveSrv();
-export { instance as liveSrv };
+var instance = new LiveSrv();
+export {instance as liveSrv};

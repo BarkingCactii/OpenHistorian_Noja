@@ -1,20 +1,22 @@
+///<reference path="../../../headers/common.d.ts" />
+
 import _ from 'lodash';
 
 export default class ResponseParser {
   constructor(private $q) {}
 
   processQueryResult(res) {
-    const data = [];
+    var data = [];
 
     if (!res.data.results) {
-      return { data: data };
+      return {data: data};
     }
 
-    for (const key in res.data.results) {
-      const queryRes = res.data.results[key];
+    for (let key in res.data.results) {
+      let queryRes = res.data.results[key];
 
       if (queryRes.series) {
-        for (const series of queryRes.series) {
+        for (let series of queryRes.series) {
           data.push({
             target: series.name,
             datapoints: series.points,
@@ -25,7 +27,7 @@ export default class ResponseParser {
       }
 
       if (queryRes.tables) {
-        for (const table of queryRes.tables) {
+        for (let table of queryRes.tables) {
           table.type = 'table';
           table.refId = queryRes.refId;
           table.meta = queryRes.meta;
@@ -34,13 +36,11 @@ export default class ResponseParser {
       }
     }
 
-    return { data: data };
+    return {data: data};
   }
 
   parseMetricFindQueryResult(refId, results) {
-    if (!results || results.data.length === 0 || results.data.results[refId].meta.rowCount === 0) {
-      return [];
-    }
+    if (!results || results.data.length === 0 || results.data.results[refId].meta.rowCount === 0) { return []; }
 
     const columns = results.data.results[refId].tables[0].columns;
     const rows = results.data.results[refId].tables[0].rows;
@@ -59,10 +59,7 @@ export default class ResponseParser {
 
     for (let i = 0; i < rows.length; i++) {
       if (!this.containsKey(res, rows[i][textColIndex])) {
-        res.push({
-          text: rows[i][textColIndex],
-          value: rows[i][valueColIndex],
-        });
+        res.push({text: rows[i][textColIndex], value: rows[i][valueColIndex]});
       }
     }
 
@@ -75,14 +72,14 @@ export default class ResponseParser {
     for (let i = 0; i < rows.length; i++) {
       for (let j = 0; j < rows[i].length; j++) {
         const value = rows[i][j];
-        if (res.indexOf(value) === -1) {
+        if ( res.indexOf( value ) === -1 ) {
           res.push(value);
         }
       }
     }
 
     return _.map(res, value => {
-      return { text: value };
+      return { text: value};
     });
   }
 
@@ -109,7 +106,7 @@ export default class ResponseParser {
     const table = data.data.results[options.annotation.name].tables[0];
 
     let timeColumnIndex = -1;
-    const titleColumnIndex = -1;
+    let titleColumnIndex = -1;
     let textColumnIndex = -1;
     let tagsColumnIndex = -1;
 
@@ -124,9 +121,7 @@ export default class ResponseParser {
     }
 
     if (timeColumnIndex === -1) {
-      return this.$q.reject({
-        message: 'Missing mandatory time column in annotation query.',
-      });
+      return this.$q.reject({message: 'Missing mandatory time column in annotation query.'});
     }
 
     const list = [];
@@ -134,10 +129,10 @@ export default class ResponseParser {
       const row = table.rows[i];
       list.push({
         annotation: options.annotation,
-        time: Math.floor(row[timeColumnIndex]),
+        time: Math.floor(row[timeColumnIndex]) * 1000,
         title: row[titleColumnIndex],
         text: row[textColumnIndex],
-        tags: row[tagsColumnIndex] ? row[tagsColumnIndex].trim().split(/\s*,\s*/) : [],
+        tags: row[tagsColumnIndex] ? row[tagsColumnIndex].trim().split(/\s*,\s*/) : []
       });
     }
 

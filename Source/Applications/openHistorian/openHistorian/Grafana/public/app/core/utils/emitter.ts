@@ -1,7 +1,9 @@
-import { EventEmitter } from 'eventemitter3';
+///<reference path="../../headers/common.d.ts" />
+
+import EventEmitter from 'eventemitter3';
 
 export class Emitter {
-  private emitter: EventEmitter;
+  emitter: any;
 
   constructor() {
     this.emitter = new EventEmitter();
@@ -15,7 +17,7 @@ export class Emitter {
     this.emitter.on(name, handler);
 
     if (scope) {
-      const unbind = scope.$on('$destroy', () => {
+      var unbind = scope.$on('$destroy', () => {
         this.emitter.off(name, handler);
         unbind();
       });
@@ -28,9 +30,5 @@ export class Emitter {
 
   off(name, handler) {
     this.emitter.off(name, handler);
-  }
-
-  getEventCount(): number {
-    return (this.emitter as any)._eventsCount;
   }
 }

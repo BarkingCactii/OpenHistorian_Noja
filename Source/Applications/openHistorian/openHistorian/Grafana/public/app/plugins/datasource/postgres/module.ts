@@ -1,6 +1,18 @@
-import { PostgresDatasource } from './datasource';
-import { PostgresQueryCtrl } from './query_ctrl';
-import { PostgresConfigCtrl } from './config_ctrl';
+///<reference path="../../../headers/common.d.ts" />
+
+import {PostgresDatasource} from './datasource';
+import {PostgresQueryCtrl} from './query_ctrl';
+
+class PostgresConfigCtrl {
+  static templateUrl = 'partials/config.html';
+
+  current: any;
+
+   /** @ngInject **/
+  constructor($scope) {
+    this.current.jsonData.sslmode = this.current.jsonData.sslmode || 'require';
+  }
+}
 
 const defaultQuery = `SELECT
   extract(epoch from time_column) AS time,
@@ -17,7 +29,7 @@ class PostgresAnnotationsQueryCtrl {
 
   annotation: any;
 
-  /** @ngInject */
+  /** @ngInject **/
   constructor() {
     this.annotation.rawQuery = this.annotation.rawQuery || defaultQuery;
   }
@@ -30,3 +42,4 @@ export {
   PostgresConfigCtrl as ConfigCtrl,
   PostgresAnnotationsQueryCtrl as AnnotationsQueryCtrl,
 };
+

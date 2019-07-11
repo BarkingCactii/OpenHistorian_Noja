@@ -8,6 +8,7 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var PrometheusHighlightRules = function() {
   var keywords = (
+    "by|without|keep_common|offset|bool|and|or|unless|ignoring|on|group_left|group_right|" +
     "count|count_values|min|max|avg|sum|stddev|stdvar|bottomk|topk|quantile"
   );
 
@@ -41,67 +42,44 @@ var PrometheusHighlightRules = function() {
       token : "constant.language", // time
       regex : "\\d+[smhdwy]"
     }, {
-      token : "keyword.operator.binary",
-      regex : "\\+|\\-|\\*|\\/|%|\\^|==|!=|<=|>=|<|>|and|or|unless"
-    }, {
-      token : "keyword.other",
-      regex : "keep_common|offset|bool"
-    }, {
-      token : "keyword.control",
-      regex : "by|without|on|ignoring|group_left|group_right",
-      next  : "start-label-list-matcher"
-    }, {
-      token : "variable",
-      regex : "\\$[A-Za-z0-9_]+"
-    }, {
       token : keywordMapper,
-      regex : "[a-zA-Z_:][a-zA-Z0-9_:]*"
+      regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+    }, {
+      token : "keyword.operator",
+      regex : "\\+|\\-|\\*|\\/|%|\\^|=|==|!=|<=|>=|<|>|=\\~|!\\~"
     }, {
       token : "paren.lparen",
       regex : "[[(]"
     }, {
-      token : "paren.lparen.label-matcher",
+      token : "paren.lparen",
       regex : "{",
       next  : "start-label-matcher"
     }, {
       token : "paren.rparen",
       regex : "[\\])]"
     }, {
-      token : "paren.rparen.label-matcher",
+      token : "paren.rparen",
       regex : "}"
     }, {
       token : "text",
       regex : "\\s+"
     } ],
     "start-label-matcher" : [ {
-      token : "entity.name.tag.label-matcher",
+      token : "entity.name.tag",
       regex : '[a-zA-Z_][a-zA-Z0-9_]*'
     }, {
-      token : "keyword.operator.label-matcher",
+      token : "keyword.operator",
       regex : '=~|=|!~|!='
     }, {
-      token : "string.quoted.label-matcher",
+      token : "string.quoted",
       regex : '"[^"]*"|\'[^\']*\''
     }, {
-      token : "punctuation.operator.label-matcher",
-      regex : ","
+      token : "punctuation.operator",
+      regex : ",",
+      push  : 'start-label-matcher'
     }, {
-      token : "paren.rparen.label-matcher",
+      token : "paren.rparen",
       regex : "}",
-      next  : "start"
-    } ],
-    "start-label-list-matcher" : [ {
-      token : "paren.lparen.label-list-matcher",
-      regex : "[(]"
-    }, {
-      token : "entity.name.tag.label-list-matcher",
-      regex : '[a-zA-Z_][a-zA-Z0-9_]*'
-    }, {
-      token : "punctuation.operator.label-list-matcher",
-      regex : ","
-    }, {
-      token : "paren.rparen.label-list-matcher",
-      regex : "[)]",
       next  : "start"
     } ]
   };
@@ -134,6 +112,11 @@ var keyWordsCompletions = prometheusKeyWords.map(function(word) {
 });
 
 var prometheusFunctions = [
+  {
+    name: 'abs()', value: 'abs',
+    def: 'abs(v instant-vector)',
+    docText: 'Returns the input vector with all sample values converted to their absolute value.'
+  },
   {
     name: 'abs()', value: 'abs',
     def: 'abs(v instant-vector)',
@@ -418,9 +401,7 @@ var PrometheusCompletions = function() {};
 (function() {
   this.getCompletions = function(state, session, pos, prefix, callback) {
     var token = session.getTokenAt(pos.row, pos.column);
-    if (token.type === 'entity.name.tag.label-matcher'
-      || token.type === 'string.quoted.label-matcher'
-      || token.type === 'entity.name.tag.label-list-matcher') {
+    if (token.type === 'entity.name.tag' || token.type === 'string.quoted') {
       return callback(null, []);
     }
 

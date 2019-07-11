@@ -1,27 +1,29 @@
+///<reference path="../../headers/common.d.ts" />
+
 import _ from 'lodash';
 import coreModule from 'app/core/core_module';
 import Drop from 'tether-drop';
 
-/** @ngInject */
-function popoverSrv(this: any, $compile, $rootScope, $timeout) {
+/** @ngInject **/
+function popoverSrv($compile, $rootScope, $timeout) {
   let openDrop = null;
 
-  this.close = () => {
+  this.close = function() {
     if (openDrop) {
       openDrop.close();
     }
   };
 
-  this.show = options => {
+  this.show = function(options) {
     if (openDrop) {
       openDrop.close();
       openDrop = null;
     }
 
-    const scope = _.extend($rootScope.$new(true), options.model);
-    let drop;
+    var scope = _.extend($rootScope.$new(true), options.model);
+    var drop;
 
-    const cleanUp = () => {
+    var cleanUp = () => {
       setTimeout(() => {
         scope.$destroy();
 
@@ -41,7 +43,7 @@ function popoverSrv(this: any, $compile, $rootScope, $timeout) {
       drop.close();
     };
 
-    const contentElement = document.createElement('div');
+    var contentElement = document.createElement('div');
     contentElement.innerHTML = options.template;
 
     $compile(contentElement)(scope);
@@ -55,8 +57,8 @@ function popoverSrv(this: any, $compile, $rootScope, $timeout) {
         openOn: options.openOn,
         hoverCloseDelay: 200,
         tetherOptions: {
-          constraints: [{ to: 'scrollParent', attachment: 'together' }],
-        },
+          constraints: [{to: 'scrollParent', attachment: "none both"}]
+        }
       });
 
       drop.on('close', () => {
@@ -66,13 +68,6 @@ function popoverSrv(this: any, $compile, $rootScope, $timeout) {
       openDrop = drop;
       openDrop.open();
     }, 100);
-
-    // return close function
-    return () => {
-      if (drop) {
-        drop.close();
-      }
-    };
   };
 }
 

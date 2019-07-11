@@ -1,13 +1,13 @@
-import * as d3 from 'd3';
+import d3 from 'vendor/d3/d3';
 import $ from 'jquery';
 import _ from 'lodash';
-import { getValueBucketBound } from './heatmap_data_converter';
-import { getValueFormat } from '@grafana/ui';
+import kbn from 'app/core/utils/kbn';
+import {getValueBucketBound} from './heatmap_data_converter';
 
-const TOOLTIP_PADDING_X = 30;
-const TOOLTIP_PADDING_Y = 5;
-const HISTOGRAM_WIDTH = 160;
-const HISTOGRAM_HEIGHT = 40;
+let TOOLTIP_PADDING_X = 30;
+let TOOLTIP_PADDING_Y = 5;
+let HISTOGRAM_WIDTH = 160;
+let HISTOGRAM_HEIGHT = 40;
 
 export class HeatmapTooltip {
   tooltip: any;
@@ -28,7 +28,17 @@ export class HeatmapTooltip {
     this.mouseOverBucket = false;
     this.originalFillColor = null;
 
-    elem.on('mouseleave', this.onMouseLeave.bind(this));
+    elem.on("mouseover", this.onMouseOver.bind(this));
+    elem.on("mouseleave", this.onMouseLeave.bind(this));
+  }
+
+  onMouseOver(e) {
+    if (!this.panel.tooltip.show || !this.scope.ctrl.data || _.isEmpty(this.scope.ctrl.data.buckets)) { return; }
+
+    if (!this.tooltip) {
+      this.add();
+      this.move(e);
+    }
   }
 
   onMouseLeave() {
@@ -36,18 +46,15 @@ export class HeatmapTooltip {
   }
 
   onMouseMove(e) {
-    if (!this.panel.tooltip.show) {
-      return;
-    }
+    if (!this.panel.tooltip.show) { return; }
 
     this.move(e);
   }
 
   add() {
-    this.tooltip = d3
-      .select('body')
-      .append('div')
-      .attr('class', 'heatmap-tooltip graph-tooltip grafana-tooltip');
+    this.tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "heatmap-tooltip graph-tooltip grafana-tooltip");
   }
 
   destroy() {
@@ -59,47 +66,39 @@ export class HeatmapTooltip {
   }
 
   show(pos, data) {
-    if (!this.panel.tooltip.show || !data) {
-      return;
-    }
+    if (!this.panel.tooltip.show || !data) { return; }
     // shared tooltip mode
     if (pos.panelRelY) {
       return;
     }
 
-    const { xBucketIndex, yBucketIndex } = this.getBucketIndexes(pos, data);
+    let {xBucketIndex, yBucketIndex} = this.getBucketIndexes(pos, data);
 
-    if (!data.buckets[xBucketIndex]) {
+    if (!data.buckets[xBucketIndex] || !this.tooltip) {
       this.destroy();
       return;
     }
 
-    if (!this.tooltip) {
-      this.add();
-    }
-
     let boundBottom, boundTop, valuesNumber;
-    const xData = data.buckets[xBucketIndex];
+    let xData = data.buckets[xBucketIndex];
     // Search in special 'zero' bucket also
-    const yData: any = _.find(xData.buckets, (bucket, bucketIndex) => {
+    let yData = _.find(xData.buckets, (bucket, bucketIndex) => {
       return bucket.bounds.bottom === yBucketIndex || bucketIndex === yBucketIndex.toString();
     });
 
-    const tooltipTimeFormat = 'YYYY-MM-DD HH:mm:ss';
-    const time = this.dashboard.formatDate(xData.x, tooltipTimeFormat);
+    let tooltipTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+    let time = this.dashboard.formatDate(xData.x, tooltipTimeFormat);
 
     // Decimals override. Code from panel/graph/graph.ts
-    let countValueFormatter, bucketBoundFormatter;
+    let valueFormatter;
     if (_.isNumber(this.panel.tooltipDecimals)) {
-      countValueFormatter = this.countValueFormatter(this.panel.tooltipDecimals, null);
-      bucketBoundFormatter = this.panelCtrl.tickValueFormatter(this.panelCtrl.decimals, null);
+      valueFormatter = this.valueFormatter(this.panel.tooltipDecimals, null);
     } else {
       // auto decimals
       // legend and tooltip gets one more decimal precision
       // than graph legend ticks
-      const decimals = (this.panelCtrl.decimals || -1) + 1;
-      countValueFormatter = this.countValueFormatter(decimals, this.panelCtrl.scaledDecimals + 2);
-      bucketBoundFormatter = this.panelCtrl.tickValueFormatter(decimals, this.panelCtrl.scaledDecimals + 2);
+      let decimals = (this.panelCtrl.decimals || -1) + 1;
+      valueFormatter = this.valueFormatter(decimals, this.panelCtrl.scaledDecimals + 2);
     }
 
     let tooltipHtml = `<div class="graph-tooltip-time">${time}</div>
@@ -107,26 +106,13 @@ export class HeatmapTooltip {
 
     if (yData) {
       if (yData.bounds) {
-        if (data.tsBuckets) {
-          // Use Y-axis labels
-          const tickFormatter = valIndex => {
-            return data.tsBucketsFormatted ? data.tsBucketsFormatted[valIndex] : data.tsBuckets[valIndex];
-          };
-
-          boundBottom = tickFormatter(yBucketIndex);
-          if (this.panel.yBucketBound !== 'middle') {
-            boundTop = yBucketIndex < data.tsBuckets.length - 1 ? tickFormatter(yBucketIndex + 1) : '';
-          }
-        } else {
-          // Display 0 if bucket is a special 'zero' bucket
-          const bottom = yData.y ? yData.bounds.bottom : 0;
-          boundBottom = bucketBoundFormatter(bottom);
-          boundTop = bucketBoundFormatter(yData.bounds.top);
-        }
-        valuesNumber = countValueFormatter(yData.count);
-        const boundStr = boundTop && boundBottom ? `${boundBottom} - ${boundTop}` : boundBottom || boundTop;
+        // Display 0 if bucket is a special 'zero' bucket
+        let bottom = yData.y ? yData.bounds.bottom : 0;
+        boundBottom = valueFormatter(bottom);
+        boundTop = valueFormatter(yData.bounds.top);
+        valuesNumber = yData.count;
         tooltipHtml += `<div>
-          bucket: <b>${boundStr}</b> <br>
+          bucket: <b>${boundBottom} - ${boundTop}</b> <br>
           count: <b>${valuesNumber}</b> <br>
         </div>`;
       } else {
@@ -153,25 +139,20 @@ export class HeatmapTooltip {
   }
 
   getBucketIndexes(pos, data) {
-    const xBucketIndex = this.getXBucketIndex(pos.x, data);
-    const yBucketIndex = this.getYBucketIndex(pos.y, data);
-    return { xBucketIndex, yBucketIndex };
+    const xBucketIndex = this.getXBucketIndex(pos.offsetX, data);
+    const yBucketIndex = this.getYBucketIndex(pos.offsetY, data);
+    return {xBucketIndex, yBucketIndex};
   }
 
-  getXBucketIndex(x, data) {
-    // First try to find X bucket by checking x pos is in the
-    // [bucket.x, bucket.x + xBucketSize] interval
-    const xBucket: any = _.find(data.buckets, bucket => {
-      return x > bucket.x && x - bucket.x <= data.xBucketSize;
-    });
-    return xBucket ? xBucket.x : getValueBucketBound(x, data.xBucketSize, 1);
+  getXBucketIndex(offsetX, data) {
+    let x = this.scope.xScale.invert(offsetX - this.scope.yAxisWidth).valueOf();
+    let xBucketIndex = getValueBucketBound(x, data.xBucketSize, 1);
+    return xBucketIndex;
   }
 
-  getYBucketIndex(y, data) {
-    if (data.tsBuckets) {
-      return Math.floor(y);
-    }
-    const yBucketIndex = getValueBucketBound(y, data.yBucketSize, this.panel.yAxis.logBase);
+  getYBucketIndex(offsetY, data) {
+    let y = this.scope.yScale.invert(offsetY - this.scope.chartTop);
+    let yBucketIndex = getValueBucketBound(y, data.yBucketSize, this.panel.yAxis.logBase);
     return yBucketIndex;
   }
 
@@ -183,76 +164,62 @@ export class HeatmapTooltip {
   }
 
   addHistogram(data) {
-    const xBucket = this.scope.ctrl.data.buckets[data.x];
-    const yBucketSize = this.scope.ctrl.data.yBucketSize;
-    let min, max, ticks;
-    if (this.scope.ctrl.data.tsBuckets) {
-      min = 0;
-      max = this.scope.ctrl.data.tsBuckets.length - 1;
-      ticks = this.scope.ctrl.data.tsBuckets.length;
-    } else {
-      min = this.scope.ctrl.data.yAxis.min;
-      max = this.scope.ctrl.data.yAxis.max;
-      ticks = this.scope.ctrl.data.yAxis.ticks;
-    }
+    let xBucket = this.scope.ctrl.data.buckets[data.x];
+    let yBucketSize = this.scope.ctrl.data.yBucketSize;
+    let {min, max, ticks} = this.scope.ctrl.data.yAxis;
     let histogramData = _.map(xBucket.buckets, bucket => {
-      const count = bucket.count !== undefined ? bucket.count : bucket.values.length;
+      let count = bucket.count !== undefined ? bucket.count : bucket.values.length;
       return [bucket.bounds.bottom, count];
     });
     histogramData = _.filter(histogramData, d => {
       return d[0] >= min && d[0] <= max;
     });
 
-    const scale = this.scope.yScale.copy();
-    const histXScale = scale.domain([min, max]).range([0, HISTOGRAM_WIDTH]);
+    let scale = this.scope.yScale.copy();
+    let histXScale = scale
+    .domain([min, max])
+    .range([0, HISTOGRAM_WIDTH]);
 
     let barWidth;
     if (this.panel.yAxis.logBase === 1) {
-      barWidth = Math.floor((HISTOGRAM_WIDTH / (max - min)) * yBucketSize * 0.9);
+      barWidth = Math.floor(HISTOGRAM_WIDTH / (max - min) * yBucketSize * 0.9);
     } else {
-      const barNumberFactor = yBucketSize ? yBucketSize : 1;
-      barWidth = Math.floor((HISTOGRAM_WIDTH / ticks / barNumberFactor) * 0.9);
+      let barNumberFactor = yBucketSize ? yBucketSize : 1;
+      barWidth = Math.floor(HISTOGRAM_WIDTH / ticks / barNumberFactor * 0.9);
     }
     barWidth = Math.max(barWidth, 1);
 
     // Normalize histogram Y axis
-    const histogramDomain = _.reduce(_.map(histogramData, d => d[1]), (sum, val) => sum + val, 0);
-    const histYScale = d3
-      .scaleLinear()
+    let histogramDomain = _.reduce(_.map(histogramData, d => d[1]), (sum, val) => sum + val, 0);
+    let histYScale = d3.scaleLinear()
       .domain([0, histogramDomain])
       .range([0, HISTOGRAM_HEIGHT]);
 
-    const histogram = this.tooltip
-      .select('.heatmap-histogram')
-      .append('svg')
-      .attr('width', HISTOGRAM_WIDTH)
-      .attr('height', HISTOGRAM_HEIGHT);
+    let histogram = this.tooltip.select(".heatmap-histogram")
+    .append("svg")
+    .attr("width", HISTOGRAM_WIDTH)
+    .attr("height", HISTOGRAM_HEIGHT);
 
-    histogram
-      .selectAll('.bar')
-      .data(histogramData)
-      .enter()
-      .append('rect')
-      .attr('x', d => {
-        return histXScale(d[0]);
-      })
-      .attr('width', barWidth)
-      .attr('y', d => {
+    histogram.selectAll(".bar").data(histogramData)
+    .enter().append("rect")
+    .attr("x", d => {
+      return histXScale(d[0]);
+    })
+    .attr("width", barWidth)
+    .attr("y", d => {
         return HISTOGRAM_HEIGHT - histYScale(d[1]);
       })
-      .attr('height', d => {
+      .attr("height", d => {
         return histYScale(d[1]);
       });
   }
 
   move(pos) {
-    if (!this.tooltip) {
-      return;
-    }
+    if (!this.tooltip) { return; }
 
-    const elem = $(this.tooltip.node())[0];
-    const tooltipWidth = elem.clientWidth;
-    const tooltipHeight = elem.clientHeight;
+    let elem = $(this.tooltip.node())[0];
+    let tooltipWidth = elem.clientWidth;
+    let tooltipHeight = elem.clientHeight;
 
     let left = pos.pageX + TOOLTIP_PADDING_X;
     let top = pos.pageY + TOOLTIP_PADDING_Y;
@@ -265,13 +232,15 @@ export class HeatmapTooltip {
       top = pos.pageY - tooltipHeight - TOOLTIP_PADDING_Y;
     }
 
-    return this.tooltip.style('left', left + 'px').style('top', top + 'px');
+    return this.tooltip
+      .style("left", left + "px")
+      .style("top", top + "px");
   }
 
-  countValueFormatter(decimals, scaledDecimals = null) {
-    const format = 'short';
-    return value => {
-      return getValueFormat(format)(value, decimals, scaledDecimals);
+  valueFormatter(decimals, scaledDecimals = null) {
+    let format = this.panel.yAxis.format;
+    return function(value) {
+      return kbn.valueFormats[format](value, decimals, scaledDecimals);
     };
   }
 }

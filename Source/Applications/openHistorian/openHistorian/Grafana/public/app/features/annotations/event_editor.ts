@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { coreModule } from 'app/core/core';
-import { MetricsPanelCtrl } from 'app/plugins/sdk';
-import { AnnotationEvent } from '@grafana/ui';
+import {coreModule} from 'app/core/core';
+import {MetricsPanelCtrl} from 'app/plugins/sdk';
+import {AnnotationEvent} from './event';
 
 export class EventEditorCtrl {
   panelCtrl: MetricsPanelCtrl;
   event: AnnotationEvent;
-  timeRange: { from: number; to: number };
+  timeRange: {from: number, to: number};
   form: any;
   close: any;
   timeFormated: string;
 
-  /** @ngInject */
+  /** @ngInject **/
   constructor(private annotationsSrv) {
     this.event.panelId = this.panelCtrl.panel.id;
     this.event.dashboardId = this.panelCtrl.dashboard.id;
@@ -31,7 +31,7 @@ export class EventEditorCtrl {
       return;
     }
 
-    const saveModel = _.cloneDeep(this.event);
+    let saveModel = _.cloneDeep(this.event);
     saveModel.time = saveModel.time.valueOf();
     saveModel.timeEnd = 0;
 
@@ -45,33 +45,7 @@ export class EventEditorCtrl {
     }
 
     if (saveModel.id) {
-      this.annotationsSrv
-        .updateAnnotationEvent(saveModel)
-        .then(() => {
-          this.panelCtrl.refresh();
-          this.close();
-        })
-        .catch(() => {
-          this.panelCtrl.refresh();
-          this.close();
-        });
-    } else {
-      this.annotationsSrv
-        .saveAnnotationEvent(saveModel)
-        .then(() => {
-          this.panelCtrl.refresh();
-          this.close();
-        })
-        .catch(() => {
-          this.panelCtrl.refresh();
-          this.close();
-        });
-    }
-  }
-
-  delete() {
-    return this.annotationsSrv
-      .deleteAnnotationEvent(this.event)
+      this.annotationsSrv.updateAnnotationEvent(saveModel)
       .then(() => {
         this.panelCtrl.refresh();
         this.close();
@@ -80,12 +54,35 @@ export class EventEditorCtrl {
         this.panelCtrl.refresh();
         this.close();
       });
+    } else {
+      this.annotationsSrv.saveAnnotationEvent(saveModel)
+      .then(() => {
+        this.panelCtrl.refresh();
+        this.close();
+      })
+      .catch(() => {
+        this.panelCtrl.refresh();
+        this.close();
+      });
+    }
+  }
+
+  delete() {
+    return this.annotationsSrv.deleteAnnotationEvent(this.event)
+    .then(() => {
+      this.panelCtrl.refresh();
+      this.close();
+    })
+    .catch(() => {
+      this.panelCtrl.refresh();
+      this.close();
+    });
   }
 }
 
 function tryEpochToMoment(timestamp) {
   if (timestamp && _.isNumber(timestamp)) {
-    const epoch = Number(timestamp);
+    let epoch = Number(timestamp);
     return moment(epoch);
   } else {
     return timestamp;
@@ -100,10 +97,10 @@ export function eventEditor() {
     controllerAs: 'ctrl',
     templateUrl: 'public/app/features/annotations/partials/event_editor.html',
     scope: {
-      panelCtrl: '=',
-      event: '=',
-      close: '&',
-    },
+      "panelCtrl": "=",
+      "event": "=",
+      "close": "&",
+    }
   };
 }
 

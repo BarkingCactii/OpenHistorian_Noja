@@ -1,4 +1,4 @@
-# OpenTSDB Data Source -  Native Plugin
+# OpenTSDB Datasource -  Native Plugin
 
 Grafana ships with **built in** support for OpenTSDB, a scalable, distributed time series database.
 

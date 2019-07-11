@@ -1,37 +1,14 @@
-.graph-panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  &--legend-right {
-    @include media-breakpoint-up(sm) {
-      flex-direction: row;
-
-      .graph-legend {
-        flex: 0 1 10px;
-        max-height: 100%;
-      }
-
-      .graph-legend-series {
-        display: block;
-        padding-left: 4px;
-      }
-
-      .graph-legend-table .graph-legend-series {
-        display: table-row;
-      }
-    }
-  }
-}
-
-.graph-panel__chart {
+.graph-canvas-wrapper {
   position: relative;
   cursor: crosshair;
-  flex-grow: 1;
-  min-height: 65%;
+}
+
+.histogram-chart {
+  position: relative;
 }
 
 .datapoints-warning {
+  pointer: none;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -45,21 +22,15 @@
 }
 
 .graph-legend {
-  display: flex;
-  flex: 0 1 auto;
-  max-height: 35%;
-  margin: 0;
+  @include clearfix();
+  margin: 0 $spacer;
   text-align: center;
+  width: calc(100% - $spacer);
   padding-top: 6px;
-  position: relative;
 
   .popover-content {
     padding: 0;
   }
-}
-
-.graph-legend-content {
-  position: relative;
 }
 
 .graph-legend-icon {
@@ -71,25 +42,25 @@
 .graph-legend-icon,
 .graph-legend-alias,
 .graph-legend-value {
-  display: inline;
   cursor: pointer;
+  float: left;
   white-space: nowrap;
   font-size: 85%;
   text-align: left;
   &.current::before {
-    content: 'Current: ';
+    content: "Current: "
   }
   &.max::before {
-    content: 'Max: ';
+    content: "Max: "
   }
   &.min::before {
-    content: 'Min: ';
+    content: "Min: "
   }
   &.total::before {
-    content: 'Total: ';
+    content: "Total: "
   }
   &.avg::before {
-    content: 'Avg: ';
+    content: "Avg: "
   }
 }
 
@@ -109,42 +80,17 @@
   }
 }
 
-// Don't move series to the right if legend is on the right as well
-.graph-panel--legend-right .graph-legend-series--right-y {
-  float: left;
-}
-
 .graph-legend-value {
   padding-left: 6px;
 }
 
-// fix for phantomjs
-.body--phantomjs {
-  .graph-panel {
-    display: -webkit-box;
-  }
-
-  .graph-panel--legend-right {
-    .graph-legend {
-      display: block;
-      max-width: min-content;
-    }
-
-    .graph-panel__chart {
-      display: flex;
-    }
-
-    .graph-legend-table {
-      display: table;
-      width: auto;
-    }
-  }
-}
-
 .graph-legend-table {
-  padding-bottom: 1px;
-  padding-right: 5px;
-  padding-left: 5px;
+  tbody {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 1px;
+  }
 
   .graph-legend-series {
     display: table-row;
@@ -161,10 +107,8 @@
     }
   }
 
-  td,
-  .graph-legend-alias,
-  .graph-legend-icon,
-  .graph-legend-value {
+
+  td, .graph-legend-alias, .graph-legend-icon, .graph-legend-value {
     float: none;
     display: table-cell;
     white-space: nowrap;
@@ -181,7 +125,7 @@
     }
   }
 
-  .graph-legend-value {
+ .graph-legend-value  {
     padding-left: 15px;
   }
 
@@ -195,15 +139,11 @@
   }
 
   .graph-legend-series:nth-child(odd) {
-    background: $table-bg-accent;
+    background-color: $grafanaListAccent;
   }
 
   .graph-legend-value {
-    &.current,
-    &.max,
-    &.min,
-    &.total,
-    &.avg {
+    &.current, &.max, &.min, &.total, &.avg {
       &::before {
         content: '';
       }
@@ -220,6 +160,40 @@
   }
 }
 
+.graph-legend-rightside {
+
+  &.graph-wrapper {
+    display: table;
+    width: 100%;
+  }
+
+  .graph-canvas-wrapper {
+    display: table-cell;
+    width: 100%;
+    position: relative;
+  }
+
+  .graph-legend-wrapper {
+    display: table-cell;
+    vertical-align: top;
+    position: relative;
+    left: 4px;
+  }
+
+  .graph-legend {
+    margin: 0 0 0 1rem;
+  }
+
+  .graph-legend-series {
+    display: block;
+    padding-left: 0px;
+  }
+
+  .graph-legend-table .graph-legend-series {
+    display: table-row;
+  }
+}
+
 .graph-legend-series-hidden {
   .graph-legend-value,
   .graph-legend-alias {
@@ -228,7 +202,7 @@
 }
 
 .graph-legend-popover {
-  width: 210px;
+  width: 200px;
   label {
     display: inline-block;
   }
@@ -267,7 +241,7 @@
     text-align: center;
     position: relative;
     top: -3px;
-    padding: $space-xxs;
+    padding: 0.2rem;
     font-weight: bold;
     color: $text-color;
   }
@@ -283,11 +257,11 @@
 
   .graph-tooltip-series-name {
     display: table-cell;
-    padding: $space-xxs;
+    padding: 0.15rem;
     max-width: 650px;
     text-overflow: ellipsis;
     overflow: hidden;
-  }
+   }
 
   .graph-tooltip-value {
     display: table-cell;
@@ -298,6 +272,7 @@
 }
 
 .graph-annotation {
+
   .label-tag {
     margin-right: 4px;
     margin-top: 8px;
@@ -305,7 +280,7 @@
 
   .graph-annotation__header {
     background-color: $popover-border-color;
-    padding: 6px 10px;
+    padding: 0.40rem 0.65rem;
     display: flex;
   }
 
@@ -333,7 +308,7 @@
   }
 
   .graph-annotation__body {
-    padding: $space-sm;
+    padding: 0.65rem;
   }
 
   .graph-annotation__user {
@@ -352,7 +327,7 @@
 
 .left-yaxis-label {
   top: 50%;
-  left: 8px;
+  left: 2px;
   transform: translateX(-50%) translateY(-50%) rotate(-90deg);
   // this is needed for phantomsjs 2.1
   -webkit-transform: translateX(-50%) translateY(-50%) rotate(-90deg);
@@ -360,7 +335,7 @@
 
 .right-yaxis-label {
   top: 50%;
-  right: 8px;
+  right: 2px;
   transform: translateX(50%) translateY(-50%) rotate(90deg);
   // this is needed for phantomsjs 2.1
   -webkit-transform: translateX(50%) translateY(-50%) rotate(90deg);
@@ -372,6 +347,7 @@
   font-size: $font-size-sm;
   position: absolute;
   text-align: center;
+  font-size: 12px;
 }
 
 .alert-handle-wrapper {
@@ -401,23 +377,21 @@
       top: 0px;
       float: left;
       border-right: 1px solid $btn-divider-left;
-      padding: 6px 4px 4px 6px;
+      padding: 0.5rem 0.3rem 0.4rem 0.4rem;
     }
   }
 
   .alert-handle-value {
     border-left: 1px solid $btn-divider-right;
-    padding: $space-xs $space-sm;
-    padding: 7px;
-    line-height: 24px;
-    height: 24px;
+    padding: 0.5rem;
+    line-height: 2rem;
 
     .alert-handle-grip {
       background: url($btn-drag-image) no-repeat 50% 50%;
       background-size: 8px;
       float: right;
-      width: 16px;
-      height: 24px;
+      width: 1rem;
+      height: 2rem;
       margin-right: 2px;
     }
   }
@@ -431,7 +405,7 @@
     }
   }
 
-  &--T0 {
+  &--T0{
     right: -104px;
     width: 129px;
 
@@ -454,10 +428,10 @@
     position: relative;
 
     &--critical {
-      background-color: rgba(237, 46, 24, 0.6);
+      background-color: rgba(237, 46, 24, 0.60);
     }
     &--warning {
-      background-color: rgba(247, 149, 32, 0.6);
+      background-color: rgba(247, 149, 32, 0.60);
     }
   }
 }

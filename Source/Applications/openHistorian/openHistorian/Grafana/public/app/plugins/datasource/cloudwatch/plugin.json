@@ -3,13 +3,11 @@
   "name": "CloudWatch",
   "id": "cloudwatch",
 
-  "hiddenQueries": true,
   "metrics": true,
   "alerting": true,
   "annotations": true,
 
   "info": {
-    "description": "Cloudwatch Data Source for Grafana",
     "author": {
       "name": "Grafana Project",
       "url": "https://grafana.com"

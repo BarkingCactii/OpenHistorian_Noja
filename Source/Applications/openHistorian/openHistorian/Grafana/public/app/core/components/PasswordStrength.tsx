@@ -1,31 +1,28 @@
 import React from 'react';
+import { react2AngularDirective } from 'app/core/utils/react2angular';
 
-export interface Props {
+export interface IProps {
   password: string;
 }
 
-export class PasswordStrength extends React.Component<Props, any> {
+export class PasswordStrength extends React.Component<IProps, any> {
+
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { password } = this.props;
-    let strengthText = 'strength: strong like a bull.';
-    let strengthClass = 'password-strength-good';
+    let strengthText = "strength: strong like a bull.";
+    let strengthClass = "password-strength-good";
 
-    if (!password) {
-      return null;
+    if (this.props.password.length <= 8) {
+      strengthText = "strength: you can do better.";
+      strengthClass = "password-strength-ok";
     }
 
-    if (password.length <= 8) {
-      strengthText = 'strength: you can do better.';
-      strengthClass = 'password-strength-ok';
-    }
-
-    if (password.length < 4) {
-      strengthText = 'strength: weak sauce.';
-      strengthClass = 'password-strength-bad';
+    if (this.props.password.length < 4) {
+      strengthText = "strength: weak sauce.";
+      strengthClass = "password-strength-bad";
     }
 
     return (
@@ -35,3 +32,6 @@ export class PasswordStrength extends React.Component<Props, any> {
     );
   }
 }
+
+react2AngularDirective('passwordStrength', PasswordStrength, ['password']);
+

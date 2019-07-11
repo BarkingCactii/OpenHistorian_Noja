@@ -1,10 +1,11 @@
+///<reference path="../../../headers/common.d.ts" />
+
 import _ from 'lodash';
-import { PanelCtrl } from 'app/plugins/sdk';
-import impressionSrv from 'app/core/services/impression_srv';
+import {PanelCtrl} from 'app/plugins/sdk';
+import {impressions} from 'app/features/dashboard/impression_store';
 
 class DashListCtrl extends PanelCtrl {
   static templateUrl = 'module.html';
-  static scrollable = true;
 
   groups: any[];
   modes: any[];
@@ -17,11 +18,10 @@ class DashListCtrl extends PanelCtrl {
     search: false,
     starred: true,
     headings: true,
-    folderId: null,
   };
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private dashboardSrv) {
+  constructor($scope, $injector, private backendSrv) {
     super($scope, $injector);
     _.defaults(this.panel, this.panelDefaults);
 
@@ -34,9 +34,9 @@ class DashListCtrl extends PanelCtrl {
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
 
     this.groups = [
-      { list: [], show: false, header: 'Starred dashboards' },
-      { list: [], show: false, header: 'Recently viewed dashboards' },
-      { list: [], show: false, header: 'Search' },
+      {list: [], show: false, header: "Starred dashboards",},
+      {list: [], show: false, header: "Recently viewed dashboards"},
+      {list: [], show: false, header: "Search"},
     ];
 
     // update capability
@@ -60,18 +60,20 @@ class DashListCtrl extends PanelCtrl {
   }
 
   onInitEditMode() {
+    this.editorTabIndex = 1;
     this.modes = ['starred', 'search', 'recently viewed'];
     this.addEditorTab('Options', 'public/app/plugins/panel/dashlist/editor.html');
   }
 
   onRefresh() {
-    const promises = [];
+    var promises = [];
 
     promises.push(this.getRecentDashboards());
     promises.push(this.getStarred());
     promises.push(this.getSearch());
 
-    return Promise.all(promises).then(this.renderingCompleted.bind(this));
+    return Promise.all(promises)
+      .then(this.renderingCompleted.bind(this));
   }
 
   getSearch() {
@@ -80,12 +82,10 @@ class DashListCtrl extends PanelCtrl {
       return Promise.resolve();
     }
 
-    const params = {
+    var params = {
       limit: this.panel.limit,
       query: this.panel.query,
       tag: this.panel.tags,
-      folderIds: this.panel.folderId,
-      type: 'dash-db',
     };
 
     return this.backendSrv.search(params).then(result => {
@@ -99,21 +99,10 @@ class DashListCtrl extends PanelCtrl {
       return Promise.resolve();
     }
 
-    const params = { limit: this.panel.limit, starred: 'true' };
+    var params = {limit: this.panel.limit, starred: "true"};
     return this.backendSrv.search(params).then(result => {
       this.groups[0].list = result;
     });
-  }
-
-  starDashboard(dash, evt) {
-    this.dashboardSrv.starDashboard(dash.id, dash.isStarred).then(newState => {
-      dash.isStarred = newState;
-    });
-
-    if (evt) {
-      evt.stopPropagation();
-      evt.preventDefault();
-    }
   }
 
   getRecentDashboards() {
@@ -122,24 +111,17 @@ class DashListCtrl extends PanelCtrl {
       return Promise.resolve();
     }
 
-    const dashIds = _.take(impressionSrv.getDashboardOpened(), this.panel.limit);
-    return this.backendSrv.search({ dashboardIds: dashIds, limit: this.panel.limit }).then(result => {
-      this.groups[1].list = dashIds
-        .map(orderId => {
-          return _.find(result, dashboard => {
-            return dashboard.id === orderId;
-          });
-        })
-        .filter(el => {
-          return el !== undefined;
+    var dashIds = _.take(impressions.getDashboardOpened(), this.panel.limit);
+    return this.backendSrv.search({dashboardIds: dashIds, limit: this.panel.limit}).then(result => {
+      this.groups[1].list = dashIds.map(orderId => {
+        return _.find(result, dashboard => {
+          return dashboard.id === orderId;
         });
+      }).filter(el => {
+        return el !== undefined;
+      });
     });
-  }
-
-  onFolderChange(folder: any) {
-    this.panel.folderId = folder.id;
-    this.refresh();
   }
 }
 
-export { DashListCtrl, DashListCtrl as PanelCtrl };
+export {DashListCtrl, DashListCtrl as PanelCtrl};

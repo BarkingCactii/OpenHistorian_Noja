@@ -1,3 +1,5 @@
+///<reference path="../../headers/common.d.ts" />
+
 import _ from 'lodash';
 import coreModule from '../core_module';
 
@@ -7,14 +9,15 @@ export function arrayJoin() {
   return {
     restrict: 'A',
     require: 'ngModel',
-    link: (scope: any, element: any, attr: any, ngModel: any) => {
-      function split_array(text: string) {
+    link: function(scope, element, attr, ngModel) {
+
+      function split_array(text) {
         return (text || '').split(',');
       }
 
-      function join_array(text: string) {
+      function join_array(text) {
         if (_.isArray(text)) {
-          return ((text || '') as any).join(',');
+          return (text || '').join(',');
         } else {
           return text;
         }
@@ -22,8 +25,9 @@ export function arrayJoin() {
 
       ngModel.$parsers.push(split_array);
       ngModel.$formatters.push(join_array);
-    },
+    }
   };
 }
 
 coreModule.directive('arrayJoin', arrayJoin);
+

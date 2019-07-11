@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import coreModule from 'app/core/core_module';
-import alertDef from '../alerting/state/alertDef';
+import alertDef from '../alerting/alert_def';
 
-/** @ngInject */
-export function annotationTooltipDirective($sanitize, dashboardSrv, contextSrv, $compile) {
+/** @ngInject **/
+export function annotationTooltipDirective($sanitize, dashboardSrv, contextSrv, popoverSrv, $compile) {
+
   function sanitizeString(str) {
     try {
       return $sanitize(str);
@@ -17,24 +18,24 @@ export function annotationTooltipDirective($sanitize, dashboardSrv, contextSrv, 
   return {
     restrict: 'E',
     scope: {
-      event: '=',
-      onEdit: '&',
+      "event": "=",
+      "onEdit": "&"
     },
-    link: (scope, element) => {
-      const event = scope.event;
-      let title = event.title;
-      let text = event.text;
-      const dashboard = dashboardSrv.getCurrent();
+    link: function(scope, element) {
+      var event = scope.event;
+      var title = event.title;
+      var text = event.text;
+      var dashboard = dashboardSrv.getCurrent();
 
-      let tooltip = '<div class="graph-annotation">';
-      let titleStateClass = '';
+      var tooltip = '<div class="graph-annotation">';
+      var titleStateClass = '';
 
       if (event.alertId) {
-        const stateModel = alertDef.getStateDisplayModel(event.newState);
+        var stateModel = alertDef.getStateDisplayModel(event.newState);
         titleStateClass = stateModel.stateClass;
-        title = `<i class="${stateModel.iconClass}"></i> ${stateModel.text}`;
+        title = `<i class="icon-gf ${stateModel.iconClass}"></i> ${stateModel.text}`;
         text = alertDef.getAlertAnnotationInfo(event);
-        if (event.text) {
+        if (event.text)  {
           text = text + '<br />' + event.text;
         }
       } else if (title) {
@@ -42,11 +43,9 @@ export function annotationTooltipDirective($sanitize, dashboardSrv, contextSrv, 
         title = '';
       }
 
-      let header = `<div class="graph-annotation__header">`;
+      var header = `<div class="graph-annotation__header">`;
       if (event.login) {
-        header += `<div class="graph-annotation__user" bs-tooltip="'Created by ${event.login}'"><img src="${
-          event.avatarUrl
-        }" /></div>`;
+        header += `<div class="graph-annotation__user" bs-tooltip="'Created by ${event.login}'"><img src="${event.avatarUrl}" /></div>`;
       }
       header += `
           <span class="graph-annotation__title ${titleStateClass}">${sanitizeString(title)}</span>
@@ -54,7 +53,7 @@ export function annotationTooltipDirective($sanitize, dashboardSrv, contextSrv, 
       `;
 
       // Show edit icon only for users with at least Editor role
-      if (event.id && dashboard.meta.canEdit) {
+      if (event.id && contextSrv.isEditor) {
         header += `
           <span class="pointer graph-annotation__edit-icon" ng-click="onEdit()">
             <i class="fa fa-pencil-square"></i>
@@ -70,23 +69,24 @@ export function annotationTooltipDirective($sanitize, dashboardSrv, contextSrv, 
         tooltip += '<div>' + sanitizeString(text.replace(/\n/g, '<br>')) + '</div>';
       }
 
-      const tags = event.tags;
+      var tags = event.tags;
 
       if (tags && tags.length) {
         scope.tags = tags;
-        tooltip +=
-          '<span class="label label-tag small" ng-repeat="tag in tags" tag-color-from-name="tag">{{tag}}</span><br/>';
+        tooltip += '<span class="label label-tag small" ng-repeat="tag in tags" tag-color-from-name="tag">{{tag}}</span><br/>';
       }
 
-      tooltip += '</div>';
+      tooltip += "</div>";
       tooltip += '</div>';
 
-      const $tooltip = $(tooltip);
+      var $tooltip = $(tooltip);
       $tooltip.appendTo(element);
 
       $compile(element.contents())(scope);
-    },
+    }
   };
 }
+
+
 
 coreModule.directive('annotationTooltip', annotationTooltipDirective);

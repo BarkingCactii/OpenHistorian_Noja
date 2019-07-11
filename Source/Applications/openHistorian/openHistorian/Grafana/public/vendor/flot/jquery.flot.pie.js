@@ -73,7 +73,6 @@ More detail and specific examples can be found in the included HTML file.
 			centerLeft = null,
 			centerTop = null,
 			processed = false,
-			options = null,
 			ctx = null;
 
 		// interactive variables
