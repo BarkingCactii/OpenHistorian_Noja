@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<!-- This XML document is used as a substitute for a config frame for a device in OpenPDC
+	 To contruct this XML file a Dataset tag must be led with. Following this, tags of dataset elements
+	 with there desired label name.
+
+	 Available elements and their required order are as follows:
+	 <FLAG></FLAG> The STAT element of the Synchrophasor dataset (only 1)
+	 <VPHA></VPHA> Voltage Phasor
+	 <IPHA></IPHA> Current Phasor
+	 <FREQ></FREQ> Frequency
+	 <DFDT></DFDT> Rate of Change of Frequency (ROCOF)
+	 <ALOG></ALOG> Analogue value
+	 <DIGI></DIGI> Digitial Value
+   <BITSTRING></BITSTRING> Bitstring value. 
+
+   BITSTRING Spec
+   Regarding bitstring the 4 bytes { 84, 02, 06, 80 } are decoded as follows:
+
+	84 = type bitstring
+	02 = length
+	06 = padding bits
+	80 = bitstring value
+
+  This means that this bitstring value is actually 2 bits long (it has 6 bits of padding).
+
+To get the actual value you need to right shift the bitstring value by the padding bits, e.g:
+
+Value = ([bitstring value] >> [padding bits])
+Value = (80 >> 6) = 2
+Value = (40 >> 6) = 1
+
+	 
+	 Additional elements can be added to this in their required order however these elements are currently a default requirement:
+	 <Dataset>
+	 	<FLAG>StatFlag1</FLAG>
+	 </Dataset>
+
+
+	 An example dataset shown below to demonstrate order requirements:
+	 <Dataset>
+  	 	<FLAG>Stat</FLAG>
+  		<VPHA>VPHA1</VPHA>
+  		<VPHA>VPHA2</VPHA>
+  		<IPHA>IPHA1</IPHA>
+  		<IPHA>IPHA2</IPHA>
+  		<FREQ>FREQ</FREQ>
+ 		<DFDT>ROCOF</DFDT>
+ 		<ALOG>AV1</ALOG>
+  		<DIGI>DV1</DIGI>
+  		<DIGI>DV2</DIGI>
+	</Dataset>
+-->
+<!-- 
+<Dataset>
+  <FLAG>Stat</FLAG>
+  <FREQ>Freq</FREQ>
+  <DFDT>ROCOF</DFDT>
+  <DIGI>DV1</DIGI>
+  <BOOL>Bool2</BOOL>
+  <STRING>BitString</STRING>
+                        </Dataset>
+                            <FCDA ldInst="PMULD" lnClass="LTMS" lnInst="1" doName="Stat" daName="stVal" fc="ST"/>
+                            <FCDA ldInst="PMULD" lnClass="MMXU" lnInst="1" doName="Hz" daName="mag.f" fc="MX"/>
+                            <FCDA ldInst="PMULD" lnClass="MMXU" lnInst="1" doName="HzRte" daName="mag.f" fc="MX"/>
+                            <FCDA ldInst="PMULD" lnClass="MMXU" lnInst="1" doName="PhV" daName="phsA.cVal" fc="MX"/>
+                            <FCDA ldInst="PMULD" lnClass="MMXU" lnInst="1" doName="PhV" daName="phsB.cVal" fc="MX"/>
+                            <FCDA ldInst="LD0" prefix="ANA_" lnClass="GGIO" lnInst="4" doName="AnIn1" daName="mag" fc="MX"/>
+                            <FCDA ldInst="LD0" prefix="ANA_" lnClass="GGIO" lnInst="4" doName="AnIn2" daName="mag" fc="MX"/>
+                            <FCDA ldInst="LD0" prefix="VAR_" lnClass="GGIO" lnInst="5" doName="SPCSO1" daName="stVal" fc="ST"/>
+                            <FCDA ldInst="LD0" prefix="VAR_" lnClass="GGIO" lnInst="5" doName="SPCSO8" daName="stVal" fc="ST"/>
+
+  <VPHA>VPHA1</VPHA>
+  <VPHA>VPHA2</VPHA>
+  <ALOG>ALOG1</ALOG>
+  <ALOG>ALOG2</ALOG>
+  <DIGI>DIGI1</DIGI>
+  <DIGI>DIGI2</DIGI>
+  <STRUCT>
+    <ALOG>ALOG3</ALOG>
+    <ALOG>ALOG4</ALOG>
+  </STRUCT>  
+  <STRUCT>
+    <ALOG>ALOG5</ALOG>
+    <ALOG>ALOG6</ALOG>
+  </STRUCT>  
+</Dataset>                            
+
+When you add measurements use the following text below as part of the name, so an association can be formed with the tags in this file below
+
+SignalKind.cs
+       public static SignalKind ParseSignalKind(this string acronym)
+        {
+            switch (acronym)
+            {
+                case "PA": // Phase Angle
+                    return SignalKind.Angle;
+                case "PM": // Phase Magnitude
+                    return SignalKind.Magnitude;
+                case "FQ": // Frequency
+                    return SignalKind.Frequency;
+                case "DF": // dF/dt
+                    return SignalKind.DfDt;
+                case "SF": // Status Flags
+                    return SignalKind.Status;
+                case "DV": // Digital Value
+                    return SignalKind.Digital;
+                case "AV": // Analog Value
+                    return SignalKind.Analog;
+                case "CV": // Calculated Value
+                    return SignalKind.Calculation;
+                case "ST": // Statistical Value
+                    return SignalKind.Statistic;
+                case "AL": // Alarm Value
+                    return SignalKind.Alarm;
+                case "QF": // Quality Flags
+                    return SignalKind.Quality;
+                default:
+                    return SignalKind.Unknown;
+            }
+        }
+    
+	The names below (the labels within the tags) have really no significance.
+	Their only value is to map them as shown in the function above. 
+	So if you have 3 analoges, you would label them AV1, AV2, AV3 in that order.
+ 		<ALOG>AV1</ALOG>
+ 		<ALOG>AV2</ALOG>
+		<ALOG>AV3</ALOG>
+	That way you can match the corresponding value in Graph Measurements in the PDC Manager
+
+  <STRUCT>ALOG3</STRUCT>
+  <STRUCT>ALOG4</STRUCT>
+
+Final Dataset
+                        <DataSet name="PMUgoose" desc="PMU GOOSE data set">
+                            <FCDA daName="stVal" doName="Pos" fc="ST" ldInst="LD0" lnClass="XCBR" lnInst="1" prefix="OSM_"/>
+                            <FCDA daName="general" doName="Str" fc="ST" ldInst="GPLD" lnClass="PTRC" lnInst="1" prefix="OC_"/>
+                            <FCDA daName="phsA" doName="Str" fc="ST" ldInst="GPLD" lnClass="PTRC" lnInst="1" prefix="OC_"/>
+                            <FCDA daName="phsB" doName="Str" fc="ST" ldInst="GPLD" lnClass="PTRC" lnInst="1" prefix="OC_"/>
+                            <FCDA daName="phsC" doName="Str" fc="ST" ldInst="GPLD" lnClass="PTRC" lnInst="1" prefix="OC_"/>
+                            <FCDA daName="general" doName="Str" fc="ST" ldInst="EFLD" lnClass="PTRC" lnInst="1" prefix="EF_"/>
+                            <FCDA daName="general" doName="Str" fc="ST" ldInst="OVLD" lnClass="PTRC" lnInst="1" prefix="OV_"/>
+                            <FCDA daName="general" doName="Str" fc="ST" ldInst="UVLD" lnClass="PTRC" lnInst="1" prefix="UV_"/>
+                            <FCDA daName="general" doName="Str" fc="ST" ldInst="OFLD" lnClass="PTOF" lnInst="1" prefix="OF1_"/>
+                            <FCDA daName="general" doName="Str" fc="ST" ldInst="UFLD" lnClass="PTUF" lnInst="1" prefix="UF1_"/>
+                            <FCDA daName="phsA.cVal" doName="A" fc="MX" ldInst="LD0" lnClass="MMXU" lnInst="1"/>
+                            <FCDA daName="phsB.cVal" doName="A" fc="MX" ldInst="LD0" lnClass="MMXU" lnInst="1"/>
+                            <FCDA daName="phsC.cVal" doName="A" fc="MX" ldInst="LD0" lnClass="MMXU" lnInst="1"/>
+                        </DataSet>
+
+<BITSTRING> (int16)
+<BOOL>
+<BOOL>
+<BOOL>
+<BOOL>
+<BOOL>
+<BOOL>
+<BOOL>
+<BOOL>
+<BOOL>
+<STRUCTURE><STRUCTURE><FLOAT></STRUCTURE></STRUCTURE>
+<STRUCTURE><STRUCTURE><FLOAT></STRUCTURE></STRUCTURE>
+<STRUCTURE><STRUCTURE><FLOAT></STRUCTURE></STRUCTURE>
+
+-->
+<Dataset>
+  <BITSTRING>DIGI10</BITSTRING>
+  <DIGI>DIGI1</DIGI>
+  <DIGI>DIGI2</DIGI>
+  <DIGI>DIGI3</DIGI>
+  <DIGI>DIGI4</DIGI>
+  <DIGI>DIGI5</DIGI>
+  <DIGI>DIGI6</DIGI>
+  <DIGI>DIGI7</DIGI>
+  <DIGI>DIGI8</DIGI>
+  <DIGI>DIGI9</DIGI>
+  <STRUCT>
+    <ALOG>ALOG1</ALOG>
+  </STRUCT>
+  <STRUCT>
+    <ALOG>ALOG2</ALOG>
+  </STRUCT>
+  <STRUCT>
+    <ALOG>ALOG3</ALOG>
+  </STRUCT>
+</Dataset>

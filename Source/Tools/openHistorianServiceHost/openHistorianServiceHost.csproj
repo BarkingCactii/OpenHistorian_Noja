@@ -57,9 +57,6 @@
     <StartupObject>openHistorianServiceHost.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GSF.Core">
-      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -100,6 +97,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Core\GSF.Core.csproj">
+      <Project>{ff3fcba6-f01a-4ec2-bc3f-6ba832afcf88}</Project>
+      <Name>GSF.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\NPlot\NPlot45.csproj">
       <Project>{7141c894-6346-41c2-b497-dba4beba71d6}</Project>
       <Name>NPlot45</Name>

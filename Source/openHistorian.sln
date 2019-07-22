@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{3A952272
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C73F9DF6-4556-49B4-90D7-C28F87B310D6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CC9F00F-92FB-48C7-93A2-99319700C8D2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E8ADD11-FA49-4857-B2E0-0856F14D70AE}"
 	ProjectSection(SolutionItems) = preProject
 		buildmono.sh = buildmono.sh
 		..\..\GridSolutionsFramework\Source\buildmono.sh = ..\..\GridSolutionsFramework\Source\buildmono.sh
@@ -37,112 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{230319E6-0FCB-4C31-A6CD-90161BEF5949}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\GSF\AdoAdapters.dll = Dependencies\GSF\AdoAdapters.dll
-		Dependencies\GSF\AdoAdapters.XML = Dependencies\GSF\AdoAdapters.XML
-		Dependencies\GSF\Antlr3.Runtime.dll = Dependencies\GSF\Antlr3.Runtime.dll
-		Dependencies\GSF\AudioAdapters.dll = Dependencies\GSF\AudioAdapters.dll
-		Dependencies\GSF\AudioAdapters.XML = Dependencies\GSF\AudioAdapters.XML
-		Dependencies\GSF\Ciloci.Flee.dll = Dependencies\GSF\Ciloci.Flee.dll
-		Dependencies\GSF\Ciloci.Flee.xml = Dependencies\GSF\Ciloci.Flee.xml
-		Dependencies\GSF\COMTRADEAdapters.dll = Dependencies\GSF\COMTRADEAdapters.dll
-		Dependencies\GSF\COMTRADEAdapters.xml = Dependencies\GSF\COMTRADEAdapters.xml
-		Dependencies\GSF\CsvAdapters.dll = Dependencies\GSF\CsvAdapters.dll
-		Dependencies\GSF\CsvAdapters.XML = Dependencies\GSF\CsvAdapters.XML
-		Dependencies\GSF\DataQualityMonitoring.dll = Dependencies\GSF\DataQualityMonitoring.dll
-		Dependencies\GSF\DataQualityMonitoring.XML = Dependencies\GSF\DataQualityMonitoring.XML
-		Dependencies\GSF\Dnp3Adapters.dll = Dependencies\GSF\Dnp3Adapters.dll
-		Dependencies\GSF\Dnp3Adapters.XML = Dependencies\GSF\Dnp3Adapters.XML
-		Dependencies\GSF\DotNetAdapter.dll = Dependencies\GSF\DotNetAdapter.dll
-		Dependencies\GSF\DotNetInterface.dll = Dependencies\GSF\DotNetInterface.dll
-		Dependencies\GSF\DynamicCalculator.dll = Dependencies\GSF\DynamicCalculator.dll
-		Dependencies\GSF\DynamicCalculator.XML = Dependencies\GSF\DynamicCalculator.XML
-		Dependencies\GSF\EpriExport.dll = Dependencies\GSF\EpriExport.dll
-		Dependencies\GSF\EpriExport.XML = Dependencies\GSF\EpriExport.XML
-		Dependencies\GSF\ExpressionEvaluator.dll = Dependencies\GSF\ExpressionEvaluator.dll
-		Dependencies\GSF\FileAdapters.dll = Dependencies\GSF\FileAdapters.dll
-		Dependencies\GSF\FileAdapters.XML = Dependencies\GSF\FileAdapters.XML
-		Dependencies\GSF\FtpAdapters.dll = Dependencies\GSF\FtpAdapters.dll
-		Dependencies\GSF\FtpAdapters.xml = Dependencies\GSF\FtpAdapters.xml
-		Dependencies\GSF\GSF.Communication.dll = Dependencies\GSF\GSF.Communication.dll
-		Dependencies\GSF\GSF.Communication.xml = Dependencies\GSF\GSF.Communication.xml
-		Dependencies\GSF\GSF.COMTRADE.dll = Dependencies\GSF\GSF.COMTRADE.dll
-		Dependencies\GSF\GSF.COMTRADE.xml = Dependencies\GSF\GSF.COMTRADE.xml
-		Dependencies\GSF\GSF.Core.dll = Dependencies\GSF\GSF.Core.dll
-		Dependencies\GSF\GSF.Core.xml = Dependencies\GSF\GSF.Core.xml
-		Dependencies\GSF\GSF.Historian.dll = Dependencies\GSF\GSF.Historian.dll
-		Dependencies\GSF\GSF.Historian.XML = Dependencies\GSF\GSF.Historian.XML
-		Dependencies\GSF\GSF.InstallerActions.CA.dll = Dependencies\GSF\GSF.InstallerActions.CA.dll
-		Dependencies\GSF\GSF.Media.dll = Dependencies\GSF\GSF.Media.dll
-		Dependencies\GSF\GSF.Media.XML = Dependencies\GSF\GSF.Media.XML
-		Dependencies\GSF\GSF.Net.dll = Dependencies\GSF\GSF.Net.dll
-		Dependencies\GSF\GSF.Net.XML = Dependencies\GSF\GSF.Net.XML
-		Dependencies\GSF\GSF.PhasorProtocols.dll = Dependencies\GSF\GSF.PhasorProtocols.dll
-		Dependencies\GSF\GSF.PhasorProtocols.UI.dll = Dependencies\GSF\GSF.PhasorProtocols.UI.dll
-		Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.dll = Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.dll
-		Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.xml = Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.xml
-		Dependencies\GSF\GSF.PhasorProtocols.UI.xml = Dependencies\GSF\GSF.PhasorProtocols.UI.xml
-		Dependencies\GSF\GSF.PhasorProtocols.xml = Dependencies\GSF\GSF.PhasorProtocols.xml
-		Dependencies\GSF\GSF.PQDIF.dll = Dependencies\GSF\GSF.PQDIF.dll
-		Dependencies\GSF\GSF.PQDIF.xml = Dependencies\GSF\GSF.PQDIF.xml
-		Dependencies\GSF\GSF.Security.dll = Dependencies\GSF\GSF.Security.dll
-		Dependencies\GSF\GSF.Security.xml = Dependencies\GSF\GSF.Security.xml
-		Dependencies\GSF\GSF.SELEventParser.dll = Dependencies\GSF\GSF.SELEventParser.dll
-		Dependencies\GSF\GSF.ServiceBus.dll = Dependencies\GSF\GSF.ServiceBus.dll
-		Dependencies\GSF\GSF.ServiceBus.xml = Dependencies\GSF\GSF.ServiceBus.xml
-		Dependencies\GSF\GSF.ServiceModel.dll = Dependencies\GSF\GSF.ServiceModel.dll
-		Dependencies\GSF\GSF.ServiceModel.xml = Dependencies\GSF\GSF.ServiceModel.xml
-		Dependencies\GSF\GSF.ServiceProcess.dll = Dependencies\GSF\GSF.ServiceProcess.dll
-		Dependencies\GSF\GSF.ServiceProcess.xml = Dependencies\GSF\GSF.ServiceProcess.xml
-		Dependencies\GSF\GSF.TimeSeries.dll = Dependencies\GSF\GSF.TimeSeries.dll
-		Dependencies\GSF\GSF.TimeSeries.Transport.UI.dll = Dependencies\GSF\GSF.TimeSeries.Transport.UI.dll
-		Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.dll = Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.dll
-		Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.XML = Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.XML
-		Dependencies\GSF\GSF.TimeSeries.Transport.UI.XML = Dependencies\GSF\GSF.TimeSeries.Transport.UI.XML
-		Dependencies\GSF\GSF.TimeSeries.UI.dll = Dependencies\GSF\GSF.TimeSeries.UI.dll
-		Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll = Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll
-		Dependencies\GSF\GSF.TimeSeries.UI.WPF.xml = Dependencies\GSF\GSF.TimeSeries.UI.WPF.xml
-		Dependencies\GSF\GSF.TimeSeries.UI.xml = Dependencies\GSF\GSF.TimeSeries.UI.xml
-		Dependencies\GSF\GSF.TimeSeries.xml = Dependencies\GSF\GSF.TimeSeries.xml
-		Dependencies\GSF\GSF.Web.dll = Dependencies\GSF\GSF.Web.dll
-		Dependencies\GSF\GSF.Web.xml = Dependencies\GSF\GSF.Web.xml
-		Dependencies\GSF\GSF.Windows.dll = Dependencies\GSF\GSF.Windows.dll
-		Dependencies\GSF\GSF.Windows.xml = Dependencies\GSF\GSF.Windows.xml
-		Dependencies\GSF\Hadoop.Replication.dll = Dependencies\GSF\Hadoop.Replication.dll
-		Dependencies\GSF\Hadoop.Replication.XML = Dependencies\GSF\Hadoop.Replication.XML
-		Dependencies\GSF\HistorianAdapters.dll = Dependencies\GSF\HistorianAdapters.dll
-		Dependencies\GSF\HistorianAdapters.XML = Dependencies\GSF\HistorianAdapters.XML
-		Dependencies\GSF\ICCPExport.dll = Dependencies\GSF\ICCPExport.dll
-		Dependencies\GSF\ICCPExport.XML = Dependencies\GSF\ICCPExport.XML
-		Dependencies\GSF\Ionic.Zlib.dll = Dependencies\GSF\Ionic.Zlib.dll
-		Dependencies\GSF\Ionic.Zlib.xml = Dependencies\GSF\Ionic.Zlib.xml
-		Dependencies\GSF\KafkaAdapters.dll = Dependencies\GSF\KafkaAdapters.dll
-		Dependencies\GSF\KafkaAdapters.xml = Dependencies\GSF\KafkaAdapters.xml
-		Dependencies\GSF\Misakai.Kafka.dll = Dependencies\GSF\Misakai.Kafka.dll
-		Dependencies\GSF\MongoAdapters.dll = Dependencies\GSF\MongoAdapters.dll
-		Dependencies\GSF\MongoAdapters.XML = Dependencies\GSF\MongoAdapters.XML
-		Dependencies\GSF\MongoDB.dll = Dependencies\GSF\MongoDB.dll
-		Dependencies\GSF\MongoDB.GridFS.dll = Dependencies\GSF\MongoDB.GridFS.dll
-		Dependencies\GSF\MongoDB.GridFS.xml = Dependencies\GSF\MongoDB.GridFS.xml
-		Dependencies\GSF\MongoDB.xml = Dependencies\GSF\MongoDB.xml
-		Dependencies\GSF\MySqlAdapters.dll = Dependencies\GSF\MySqlAdapters.dll
-		Dependencies\GSF\MySqlAdapters.XML = Dependencies\GSF\MySqlAdapters.XML
-		Dependencies\GSF\NAudio.dll = Dependencies\GSF\NAudio.dll
-		Dependencies\GSF\OneSecondFrequencyAverager.dll = Dependencies\GSF\OneSecondFrequencyAverager.dll
-		Dependencies\GSF\OneSecondFrequencyAverager.xml = Dependencies\GSF\OneSecondFrequencyAverager.xml
-		Dependencies\GSF\PhasorProtocolAdapters.dll = Dependencies\GSF\PhasorProtocolAdapters.dll
-		Dependencies\GSF\PhasorProtocolAdapters.XML = Dependencies\GSF\PhasorProtocolAdapters.XML
-		Dependencies\GSF\PIAdapters.dll = Dependencies\GSF\PIAdapters.dll
-		Dependencies\GSF\PIAdapters.xml = Dependencies\GSF\PIAdapters.xml
-		Dependencies\GSF\PowerCalculations.dll = Dependencies\GSF\PowerCalculations.dll
-		Dependencies\GSF\PowerCalculations.XML = Dependencies\GSF\PowerCalculations.XML
-		Dependencies\GSF\System.Data.SQLite.dll = Dependencies\GSF\System.Data.SQLite.dll
-		Dependencies\GSF\System.Data.SQLite.xml = Dependencies\GSF\System.Data.SQLite.xml
-		Dependencies\GSF\TestingAdapters.dll = Dependencies\GSF\TestingAdapters.dll
-		Dependencies\GSF\TestingAdapters.XML = Dependencies\GSF\TestingAdapters.XML
-		Dependencies\GSF\WavInputAdapter.dll = Dependencies\GSF\WavInputAdapter.dll
-		Dependencies\GSF\WavInputAdapter.XML = Dependencies\GSF\WavInputAdapter.XML
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{649B771A-7A3F-48AA-83F1-6A21BCC1D4EE}"
 EndProject
@@ -316,7 +210,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{D7805B20-D771-4546-90DD-CD98C4BA4436}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CC9F00F-92FB-48C7-93A2-99319700C8D2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E8ADD11-FA49-4857-B2E0-0856F14D70AE}"
 	ProjectSection(SolutionItems) = preProject
 		buildmono.sh = buildmono.sh
 		..\..\GridSolutionsFramework\Source\buildmono.sh = ..\..\GridSolutionsFramework\Source\buildmono.sh
@@ -834,6 +728,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AdvancedPublish", "..\..\GridSolutionsFramework\Source\Applications\TimeSeries Platform Library Samples\AdvancedPublish\AdvancedPublish.vcxproj", "{3EC80A5B-E4B3-46D5-9FB3-756B7E15D329}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2A542BE8-8D17-44C3-BCD2-768DF480FF82} = {2A542BE8-8D17-44C3-BCD2-768DF480FF82}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Noja", "Noja", "{04D6C18E-A086-49AA-8C42-55806B33D804}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Noja\GoPMU.XML = Dependencies\Noja\GoPMU.XML
 	EndProjectSection
 EndProject
 Global
@@ -4075,6 +3974,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{9CC9F00F-92FB-48C7-93A2-99319700C8D2} = {37E1526E-E0DB-481C-A0D2-0BB742C498A4}
 		{230319E6-0FCB-4C31-A6CD-90161BEF5949} = {9C3A3ABA-9618-49B0-9104-60678B4F3D71}
 		{649B771A-7A3F-48AA-83F1-6A21BCC1D4EE} = {9C3A3ABA-9618-49B0-9104-60678B4F3D71}
 		{26B86E5B-F713-40BF-BA2D-FBA3BFC5BAF3} = {9C3A3ABA-9618-49B0-9104-60678B4F3D71}
@@ -4128,7 +4028,6 @@ Global
 		{1CEC702B-2EAD-4E65-9EAD-EDFDD23FC806} = {550621C3-C903-4405-971A-DC4BAA286BA0}
 		{13006BBE-434A-4027-940B-EAD752844137} = {37E1526E-E0DB-481C-A0D2-0BB742C498A4}
 		{D7805B20-D771-4546-90DD-CD98C4BA4436} = {37E1526E-E0DB-481C-A0D2-0BB742C498A4}
-		{9CC9F00F-92FB-48C7-93A2-99319700C8D2} = {37E1526E-E0DB-481C-A0D2-0BB742C498A4}
 		{35027A69-1A76-4312-B57B-F5826F0B87AF} = {1B63485E-46C7-4185-B968-216A02396B88}
 		{129F9272-157F-4A37-B0A4-0F9E5E4A0FE6} = {1B63485E-46C7-4185-B968-216A02396B88}
 		{F06A2E20-D5DD-4B88-9ABC-CEE7245829E3} = {37E1526E-E0DB-481C-A0D2-0BB742C498A4}
@@ -4284,6 +4183,7 @@ Global
 		{2D0AA77F-54D5-4B86-A661-60070E1FE207} = {FD32F5EF-6A51-455E-9022-19A46EE9D730}
 		{030FE192-8CC0-4833-A0B0-6E3A714EEE44} = {1B63485E-46C7-4185-B968-216A02396B88}
 		{3EC80A5B-E4B3-46D5-9FB3-756B7E15D329} = {FD32F5EF-6A51-455E-9022-19A46EE9D730}
+		{04D6C18E-A086-49AA-8C42-55806B33D804} = {9C3A3ABA-9618-49B0-9104-60678B4F3D71}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C14640B-0B31-4754-AD2D-FA804719D3BE}

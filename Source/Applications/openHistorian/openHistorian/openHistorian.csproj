@@ -401,7 +401,9 @@ CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)wwwroot" "$(SolutionDir)Appl
 CALL "$(ProjectDir)PostBuildSetup.bat" "$(ProjectDir)bin" "$(TargetDir)*.dll"
 CALL "$(ProjectDir)PostBuildSetup.bat" "$(ProjectDir)bin" "%25SystemRoot%25\Microsoft.NET\assembly\GAC_MSIL\System.Core\v4.0_4.0.0.0__b77a5c561934e089\System.Core.dll"
 XCOPY "$(SolutionDir)Data\SerializedSchema.bin" "$(TargetDir)" /Y
-"$(SolutionDir)Dependencies\GSF\ValidateAssemblyBindings.exe" "$(TargetPath).config"</PostBuildEvent>
+"$(TargetDir)ValidateAssemblyBindings.exe" "$(TargetPath).config"
+
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>

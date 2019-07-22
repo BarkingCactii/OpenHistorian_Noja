@@ -120,9 +120,6 @@
     <Reference Include="crypto">
       <HintPath>..\..\Dependencies\BouncyCastle\crypto.dll</HintPath>
     </Reference>
-    <Reference Include="GSF.Core">
-      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -450,7 +447,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Core\GSF.Core.csproj">
+      <Project>{ff3fcba6-f01a-4ec2-bc3f-6ba832afcf88}</Project>
+      <Name>GSF.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(TargetDir)..\..\Applications\openHistorian" COPY "$(TargetPath)" "$(TargetDir)..\..\Applications\openHistorian"

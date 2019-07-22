@@ -35,14 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GSF.Core, Version=2.0.195.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="GSF.Historian, Version=2.0.68.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\GSF\GSF.Historian.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\Dependencies\NuGet Packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -67,6 +59,14 @@
     <Compile Include="SortedTreeStore\Local Historian.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Core\GSF.Core.csproj">
+      <Project>{ff3fcba6-f01a-4ec2-bc3f-6ba832afcf88}</Project>
+      <Name>GSF.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Historian\GSF.Historian.csproj">
+      <Project>{7e1abf87-8936-44e5-85c0-37044e0d3877}</Project>
+      <Name>GSF.Historian</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\GSF.SortedTreeStore\GSF.SortedTreeStore.csproj">
       <Project>{040e2ae7-021b-435a-adbf-06d07ee0a67d}</Project>
       <Name>GSF.SortedTreeStore</Name>

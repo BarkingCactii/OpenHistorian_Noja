@@ -39,13 +39,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GSF.Core">
-      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="GSF.Historian, Version=2.0.110.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\GSF\GSF.Historian.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -93,6 +86,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Core\GSF.Core.csproj">
+      <Project>{ff3fcba6-f01a-4ec2-bc3f-6ba832afcf88}</Project>
+      <Name>GSF.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Historian\GSF.Historian.csproj">
+      <Project>{7e1abf87-8936-44e5-85c0-37044e0d3877}</Project>
+      <Name>GSF.Historian</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\NPlot\NPlot45.csproj">
       <Project>{7141c894-6346-41c2-b497-dba4beba71d6}</Project>
       <Name>NPlot45</Name>
