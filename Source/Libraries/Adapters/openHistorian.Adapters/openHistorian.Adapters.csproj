@@ -60,9 +60,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\ExpressionEvaluator.dll</HintPath>
     </Reference>
-    <Reference Include="GrafanaAdapters">
-      <HintPath>..\..\..\Dependencies\GSF\GrafanaAdapters.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -141,6 +138,10 @@
     <Compile Include="TrendValueAPI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\GridSolutionsFramework\Source\Libraries\Adapters\GrafanaAdapters\GrafanaAdapters.csproj">
+      <Project>{3c8d8504-1880-4cc4-ab1a-8793f3625a31}</Project>
+      <Name>GrafanaAdapters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Core\GSF.Core.csproj">
       <Project>{ff3fcba6-f01a-4ec2-bc3f-6ba832afcf88}</Project>
       <Name>GSF.Core</Name>
