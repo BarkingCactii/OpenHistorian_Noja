@@ -295,6 +295,12 @@ namespace openHistorianManager
             Process.Start("http://www.gridprotectionalliance.org/");
         }
 
+        private void NojaLogo_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://www.nojapower.com.au/");
+        }
+
+
         private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
             bool useLocalHelp = false;

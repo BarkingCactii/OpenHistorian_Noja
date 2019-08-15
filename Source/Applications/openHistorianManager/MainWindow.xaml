@@ -92,7 +92,15 @@
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <Image Source="logo_2@2x.png" Height="32" Margin="0,-5,0,0" VerticalAlignment="Center"/>
+                    <Button ToolTip="Noja Power Switchgear Pty Ltd" Width="Auto" Padding="0" Margin="0,-5,0,0" Click="NojaLogo_Click">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="logo_2@2x.png" Height="32"/>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!--<Image Source="logo_2@2x.png" Height="32" Margin="0,-5,0,0" VerticalAlignment="Center"/>-->
                     <TextBlock x:Name="TextBoxTitle" Style="{StaticResource MainTitleStyle}" Margin="5,-10,0,0"/>
                 </StackPanel>
 
