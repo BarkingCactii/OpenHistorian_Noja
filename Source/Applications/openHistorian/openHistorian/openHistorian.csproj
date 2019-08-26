@@ -46,6 +46,8 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <Use64BitIISExpress />
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <MSBuildWarningsAsMessages>MSB3276</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +61,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>default</LangVersion>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -114,6 +118,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxMin, Version=5.14.5506.26196, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\AjaxMin.dll</HintPath>
+    </Reference>
     <Reference Include="ExpressionEvaluator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=90d9f15d622e2348, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\ExpressionEvaluator.dll</HintPath>
@@ -233,6 +241,15 @@
     <Content Include="wwwroot\Images\Icons\openHistorianWebManager.ico" />
     <Content Include="wwwroot\Images\ModbusConfigEditor.png" />
     <Content Include="wwwroot\ImportCOMTRADE.cshtml" />
+    <Content Include="wwwroot\Panels\donut.svg" />
+    <Content Include="wwwroot\Panels\electricalpower.svg" />
+    <Content Include="wwwroot\Panels\helloworld.svg" />
+    <Content Include="wwwroot\Panels\helloworld2.svg" />
+    <Content Include="wwwroot\Panels\helloworld3.svg" />
+    <Content Include="wwwroot\Panels\kor1.svg" />
+    <Content Include="wwwroot\Panels\office.svg" />
+    <Content Include="wwwroot\Panels\powergen.svg" />
+    <Content Include="wwwroot\Panels\speedometer.svg" />
     <Content Include="wwwroot\Scripts\bootstrap-datetimepicker.js" />
     <Content Include="wwwroot\Scripts\dateFormat.js" />
     <Content Include="wwwroot\Content\bootstrap-sidebar.css" />
@@ -255,9 +272,7 @@
     </None>
     <Content Include="Grafana\conf\custom.ini" />
     <Content Include="Grafana\data\grafana.db" />
-    <Content Include="Common.TagTemplate">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Full Checkout Calculations.TagTemplate" />
     <None Include="openHistorian.ico" />
     <None Include="PostBuildSetup.bat" />
     <Content Include="Sample1344.PmuCapture">
@@ -268,6 +283,8 @@
     </Content>
     <Content Include="wwwroot\AddSynchrophasorDevice.cshtml" />
     <Content Include="wwwroot\AddDevice.cshtml" />
+    <Content Include="Single Phase Power Calculations.TagTemplate" />
+    <Content Include="Three Phase Power Calculations.TagTemplate" />
     <None Include="wwwroot\Companies.cshtml" />
     <Content Include="wwwroot\ExportDataHandler.ashx" />
     <None Include="wwwroot\GraphMeasurements.cshtml" />

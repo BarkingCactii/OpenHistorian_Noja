@@ -109,7 +109,7 @@ namespace openHistorian
         private static int s_modbusProtocolID;
         private static int s_comtradeProtocolID;
         private static int s_ieeeC37_118ID;
-        private static int s_vphmSignalTypeID;
+        //private static int s_vphmSignalTypeID;
 
         // Static Constructor
         static DataHub()
@@ -179,7 +179,7 @@ namespace openHistorian
 
         private int IeeeC37_118ID => s_ieeeC37_118ID != 0 ? s_ieeeC37_118ID : (s_ieeeC37_118ID = DataContext.Connection.ExecuteScalar<int>("SELECT ID FROM Protocol WHERE Acronym='IeeeC37_118V1'"));
 
-        private int VphmSignalTypeID => s_vphmSignalTypeID != 0 ? s_vphmSignalTypeID : (s_vphmSignalTypeID = DataContext.Connection.ExecuteScalar<int>("SELECT ID FROM SignalType WHERE Acronym='VPHM'"));
+        //private int VphmSignalTypeID => s_vphmSignalTypeID != 0 ? s_vphmSignalTypeID : (s_vphmSignalTypeID = DataContext.Connection.ExecuteScalar<int>("SELECT ID FROM SignalType WHERE Acronym='VPHM'"));
 
         /// <summary>
         /// Gets protocol ID for "ModbusPoller" protocol.
@@ -458,12 +458,12 @@ namespace openHistorian
             DataContext.Table<PowerCalculation>().UpdateRecord(powerCalculation);
         }
 
-        public PowerCalculation QueryPowerCalculationForCircuitDescription(string circuitDescription)
+        public PowerCalculation QueryPowerCalculationForDescriptionOrInputs(string circuitDescription, Guid voltageAngleSignalID, Guid voltageMagSignalID, Guid currentAngleSignalID, Guid currentMagSignalID)
         {
-            return DataContext.Table<PowerCalculation>().QueryRecordWhere("CircuitDescription = {0}", circuitDescription) ?? NewPowerCalculation();
+            return DataContext.Table<PowerCalculation>().QueryRecordWhere($"CircuitDescription LIKE '{circuitDescription}%' OR (VoltageAngleSignalID = {{0}} AND VoltageMagSignalID = {{1}} AND CurrentAngleSignalID = {{2}} AND CurrentMagSignalID = {{3}})", voltageAngleSignalID, voltageMagSignalID, currentAngleSignalID, currentMagSignalID) ?? NewPowerCalculation();
         }
 
-        public PowerCalculation QueryPowerCalculationForInputs(Guid voltageAngleSignalID, Guid voltageMagSignalID, Guid currentAngleSignalID, Guid currentMagSignalID)
+        public PowerCalculation QueryPowerCalculationForInputs(string circuitDescription, Guid voltageAngleSignalID, Guid voltageMagSignalID, Guid currentAngleSignalID, Guid currentMagSignalID)
         {
             return DataContext.Table<PowerCalculation>().QueryRecordWhere("VoltageAngleSignalID = {0} AND VoltageMagSignalID = {1} AND CurrentAngleSignalID = {2} AND CurrentMagSignalID = {3}", voltageAngleSignalID, voltageMagSignalID, currentAngleSignalID, currentMagSignalID) ?? NewPowerCalculation();
         }
@@ -972,109 +972,118 @@ namespace openHistorian
             return CommonPhasorServices.CreatePointTag(Program.Host.Model.Global.CompanyAcronym, deviceAcronym, null, signalTypeAcronym, null, signalIndex);
         }
 
-        public string CreatePhasorPointTag(string deviceAcronym, string signalTypeAcronym, string phasorLabel, string phase, int signalIndex)
+        public string CreatePhasorPointTag(string deviceAcronym, string signalTypeAcronym, string phasorLabel, string phase, int signalIndex, int baseKV)
         {
-            return CommonPhasorServices.CreatePointTag(Program.Host.Model.Global.CompanyAcronym, deviceAcronym, null, signalTypeAcronym, phasorLabel, signalIndex, phase?[0] ?? '_');
+            return CommonPhasorServices.CreatePointTag(Program.Host.Model.Global.CompanyAcronym, deviceAcronym, null, signalTypeAcronym, phasorLabel, signalIndex, string.IsNullOrWhiteSpace(phase) ? '_' : phase.Trim()[0], baseKV);
         }
 
-        public void SaveNominalVoltage(string signalReference, int? nominalVoltage)
-        {
-            if (string.IsNullOrWhiteSpace(signalReference) || nominalVoltage == null)
-                return;
+        #region [ Old Code ]
 
-            Measurement voltageMagnitude = QueryMeasurement(signalReference);
+        // Saving BaseKV into its own Phasor table field now...
 
-            if (voltageMagnitude.PointID == 0)
-                return;
+        //public void SaveNominalVoltage(string signalReference, int? nominalVoltage)
+        //{
+        //    if (string.IsNullOrWhiteSpace(signalReference) || nominalVoltage == null)
+        //        return;
 
-            // Nominal voltage is stored along with the VPHM measurement that is associated with the active power output measurement. Since this
-            // value is locally calculated, the metadata for this point is "owned" locally and will not be overwritten by GEP synchronizations
-            PowerCalculation powerCalculation = DataContext.Table<PowerCalculation>().QueryRecordWhere("VoltageMagSignalID = {0}", voltageMagnitude.SignalID);
+        //    Measurement voltageMagnitude = QueryMeasurement(signalReference);
 
-            if (powerCalculation == null)
-                return;
+        //    if (voltageMagnitude.PointID == 0)
+        //        return;
 
-            Measurement activePower = QueryMeasurementBySignalID(powerCalculation.ActivePowerOutputSignalID.GetValueOrDefault());
+        //    // Nominal voltage is stored along with the VPHM measurement that is associated with the active power output measurement. Since this
+        //    // value is locally calculated, the metadata for this point is "owned" locally and will not be overwritten by GEP synchronizations
+        //    PowerCalculation powerCalculation = DataContext.Table<PowerCalculation>().QueryRecordWhere("VoltageMagSignalID = {0}", voltageMagnitude.SignalID);
 
-            if (activePower.PointID == 0)
-                return;
+        //    if (powerCalculation == null)
+        //        return;
 
-            string description = activePower.Description ?? "";
-            Dictionary<string, string> settings;
+        //    Measurement activePower = QueryMeasurementBySignalID(powerCalculation.ActivePowerOutputSignalID.GetValueOrDefault());
 
-            // Look for possible settings beyond last " -- " marker in description:
-            int index = description.LastIndexOf(" -- ", StringComparison.Ordinal);
+        //    if (activePower.PointID == 0)
+        //        return;
 
-            if (index > -1)
-            {
-                try
-                {
-                    description = description.Substring(index + 4);
-                    settings = description.ParseKeyValuePairs();
-                }
-                catch
-                {
-                    settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                }
-            }
-            else
-            {
-                settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            }
+        //    string description = activePower.Description ?? "";
+        //    Dictionary<string, string> settings;
 
-            settings["nominalVoltage"] = nominalVoltage.ToString();
-            activePower.Description = $"{description} -- {settings.JoinKeyValuePairs()}";
+        //    // Look for possible settings beyond last " -- " marker in description:
+        //    int index = description.LastIndexOf(" -- ", StringComparison.Ordinal);
 
-            UpdateMeasurement(activePower);
-        }
+        //    if (index > -1)
+        //    {
+        //        try
+        //        {
+        //            description = description.Substring(index + 4);
+        //            settings = description.ParseKeyValuePairs();
+        //        }
+        //        catch
+        //        {
+        //            settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        //    }
 
-        private int? LookupNominalVoltage(Phasor phasor)
-        {
-            if (phasor.Type != 'V')
-                return null;
+        //    settings["nominalVoltage"] = nominalVoltage.ToString();
+        //    activePower.Description = $"{description} -- {settings.JoinKeyValuePairs()}";
 
-            Measurement voltageMagnitude = DataContext.Table<Measurement>().QueryRecordWhere("DeviceID = {0} AND PhasorSourceIndex = {1} AND SignalTypeID = {2}", phasor.DeviceID, phasor.SourceIndex, VphmSignalTypeID);
+        //    UpdateMeasurement(activePower);
+        //}
 
-            if (voltageMagnitude == null)
-                return null;
+        //private int? LookupNominalVoltage(Phasor phasor)
+        //{
+        //    if (phasor.BaseKV > 0)
+        //        return phasor.BaseKV;
 
-            // Nominal voltage is stored along with the VPHM measurement that is associated with the active power output measurement. Since this
-            // value is locally calculated, the metadata for this point is "owned" locally and will not be overwritten by GEP synchronizations
-            PowerCalculation powerCalculation = DataContext.Table<PowerCalculation>().QueryRecordWhere("VoltageMagSignalID = {0}", voltageMagnitude.SignalID);
+        //    if (phasor.Type != 'V')
+        //        return null;
 
-            if (powerCalculation == null)
-                return null;
+        //    Measurement voltageMagnitude = DataContext.Table<Measurement>().QueryRecordWhere("DeviceID = {0} AND PhasorSourceIndex = {1} AND SignalTypeID = {2}", phasor.DeviceID, phasor.SourceIndex, VphmSignalTypeID);
 
-            Measurement activePower = QueryMeasurementBySignalID(powerCalculation.ActivePowerOutputSignalID.GetValueOrDefault());
+        //    if (voltageMagnitude == null)
+        //        return null;
 
-            if (activePower.PointID == 0)
-                return null;
+        //    // Nominal voltage is stored along with the VPHM measurement that is associated with the active power output measurement. Since this
+        //    // value is locally calculated, the metadata for this point is "owned" locally and will not be overwritten by GEP synchronizations
+        //    PowerCalculation powerCalculation = DataContext.Table<PowerCalculation>().QueryRecordWhere("VoltageMagSignalID = {0}", voltageMagnitude.SignalID);
 
-            string description = activePower.Description;
+        //    if (powerCalculation == null)
+        //        return null;
 
-            if (string.IsNullOrWhiteSpace(description))
-                return null;
+        //    Measurement activePower = QueryMeasurementBySignalID(powerCalculation.ActivePowerOutputSignalID.GetValueOrDefault());
 
-            // Look for possible settings beyond last " -- " marker in description:
-            int index = description.LastIndexOf(" -- ", StringComparison.Ordinal);
+        //    if (activePower.PointID == 0)
+        //        return null;
 
-            if (index < 0)
-                return null;
+        //    string description = activePower.Description;
 
-            try
-            {
-                Dictionary<string, string> settings = description.Substring(index + 4).ParseKeyValuePairs();
+        //    if (string.IsNullOrWhiteSpace(description))
+        //        return null;
 
-                if (settings.TryGetValue("nominalVoltage", out string setting) && int.TryParse(setting, out int nominalVoltage))
-                    return nominalVoltage;
-            }
-            catch
-            {
-                return null;
-            }
+        //    // Look for possible settings beyond last " -- " marker in description:
+        //    int index = description.LastIndexOf(" -- ", StringComparison.Ordinal);
 
-            return null;
-        }
+        //    if (index < 0)
+        //        return null;
+
+        //    try
+        //    {
+        //        Dictionary<string, string> settings = description.Substring(index + 4).ParseKeyValuePairs();
+
+        //        if (settings.TryGetValue("nominalVoltage", out string setting) && int.TryParse(setting, out int nominalVoltage))
+        //            return nominalVoltage;
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+
+        //    return null;
+        //}
+
+        #endregion
 
         public ConfigurationFrame ExtractConfigurationFrame(int deviceID)
         {
@@ -1086,6 +1095,8 @@ namespace openHistorian
             ConfigurationFrame derivedFrame = new ConfigurationFrame
             {
                 IDCode = (ushort)device.AccessID,
+                StationName = device.Name,
+                IDLabel = device.Acronym,
                 FrameRate = (ushort)(device.FramesPerSecond ?? Program.Host.Model.Global.DefaultCalculationFramesPerSecond),
                 ConnectionString = device.ConnectionString,
                 ProtocolID = device.ProtocolID ?? IeeeC37_118ID
@@ -1100,6 +1111,7 @@ namespace openHistorian
                     // Create new configuration cell
                     ConfigurationCell derivedCell = new ConfigurationCell
                     {
+                        ID = childDevice.ID,
                         ParentID = device.ID,
                         IDCode = (ushort)childDevice.AccessID,
                         StationName = childDevice.Name,
@@ -1110,7 +1122,7 @@ namespace openHistorian
 
                     // Extract phasor definitions
                     foreach (Phasor phasor in QueryPhasorsForDevice(childDevice.ID))
-                        derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = phasor.ID, Label = phasor.Label, PhasorType = phasor.Type == 'V' ? "Voltage" : "Current", Phase = phasor.Phase.ToString(), DestinationPhasorID = phasor.DestinationPhasorID, NominalVoltage = LookupNominalVoltage(phasor) });
+                        derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = phasor.ID, Label = phasor.Label, PhasorType = phasor.Type == 'V' ? "Voltage" : "Current", Phase = phasor.Phase.ToString(), DestinationPhasorID = phasor.DestinationPhasorID, NominalVoltage = phasor.BaseKV, SourceIndex = phasor.SourceIndex });
 
                     // Add cell to frame
                     derivedFrame.Cells.Add(derivedCell);
@@ -1127,6 +1139,7 @@ namespace openHistorian
 
                     ConfigurationCell derivedCell = new ConfigurationCell
                     {
+                        ID = device.ID,
                         ParentID = null,
                         IDCode = derivedFrame.IDCode,
                         StationName = device.Name,
@@ -1137,7 +1150,7 @@ namespace openHistorian
 
                     // Extract phasor definitions
                     foreach (Phasor phasor in QueryPhasorsForDevice(device.ID))
-                        derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = phasor.ID, Label = phasor.Label, PhasorType = phasor.Type == 'V' ? "Voltage" : "Current", Phase = phasor.Phase.ToString(), DestinationPhasorID = phasor.DestinationPhasorID, NominalVoltage = LookupNominalVoltage(phasor) });
+                        derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = phasor.ID, Label = phasor.Label, PhasorType = phasor.Type == 'V' ? "Voltage" : "Current", Phase = phasor.Phase.ToString(), DestinationPhasorID = phasor.DestinationPhasorID, NominalVoltage = phasor.BaseKV, SourceIndex = phasor.SourceIndex });
 
                     // Add cell to frame
                     derivedFrame.Cells.Add(derivedCell);
@@ -1150,7 +1163,8 @@ namespace openHistorian
                 // Create new configuration cell
                 ConfigurationCell derivedCell = new ConfigurationCell
                 {
-                    ParentID = device.ID,
+                    ID = device.ID,
+                    ParentID = null,
                     IDCode = (ushort)device.AccessID,
                     StationName = device.Name,
                     IDLabel = device.Acronym
@@ -1160,7 +1174,7 @@ namespace openHistorian
 
                 // Extract phasor definitions
                 foreach (Phasor phasor in QueryPhasorsForDevice(device.ID))
-                    derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = phasor.ID, Label = phasor.Label, PhasorType = phasor.Type == 'V' ? "Voltage" : "Current", Phase = phasor.Phase.ToString(), DestinationPhasorID = phasor.DestinationPhasorID, NominalVoltage = LookupNominalVoltage(phasor) });
+                    derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = phasor.ID, Label = phasor.Label, PhasorType = phasor.Type == 'V' ? "Voltage" : "Current", Phase = phasor.Phase.ToString(), DestinationPhasorID = phasor.DestinationPhasorID, NominalVoltage = phasor.BaseKV, SourceIndex = phasor.SourceIndex });
 
                 // Add cell to frame
                 derivedFrame.Cells.Add(derivedCell);
@@ -1256,7 +1270,7 @@ namespace openHistorian
             ConfigurationFrame derivedFrame;
 
             // Create a new simple concrete configuration frame for JSON serialization converted from equivalent configuration information
-            int protocolID = 0, phasorID = 0;
+            int protocolID = 0, deviceID = 0, phasorID = -1; // Start phasor ID's at less than -1 since associated voltage == -1 is reserved as unselected
         
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
@@ -1277,6 +1291,7 @@ namespace openHistorian
                 // Create new derived configuration cell
                 ConfigurationCell derivedCell = new ConfigurationCell
                 {
+                    ID = --deviceID, // Provide a negative index so any database lookup will return null
                     ParentID = null,
                     IDCode = sourceCell.IDCode,
                     StationName = sourceCell.StationName,
@@ -1289,9 +1304,11 @@ namespace openHistorian
                 if (sourceFrequency != null)
                     derivedCell.FrequencyDefinition = new FrequencyDefinition { Label = sourceFrequency.Label };
 
+                int sourceIndex = 0;
+
                 // Create equivalent derived phasor definitions
                 foreach (IPhasorDefinition sourcePhasor in sourceCell.PhasorDefinitions)
-                    derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = ++phasorID, Label = sourcePhasor.Label, PhasorType = sourcePhasor.PhasorType.ToString() });
+                    derivedCell.PhasorDefinitions.Add(new PhasorDefinition { ID = --phasorID, Label = sourcePhasor.Label, PhasorType = sourcePhasor.PhasorType.ToString(), SourceIndex = ++sourceIndex });
 
                 // Create equivalent derived analog definitions (assuming analog type = SinglePointOnWave)
                 foreach (IAnalogDefinition sourceAnalog in sourceCell.AnalogDefinitions)
@@ -1305,7 +1322,7 @@ namespace openHistorian
                 derivedFrame.Cells.Add(derivedCell);
             }
 
-            derivedFrame.IsConcentrator = derivedFrame.Cells.Count > 0;
+            derivedFrame.IsConcentrator = derivedFrame.Cells.Count > 1;
 
             return derivedFrame;
         }
@@ -1350,7 +1367,7 @@ namespace openHistorian
             return DataContext.Table<Protocol>().QueryRecordWhere("ID = {0}", protocolID).Category;
         }
 
-        public void ValidateCalculatorConfigurations(int historianID)
+        public void ValidateCalculatorConfigurations(int? historianID)
         {
             const int Avg = 0, Max = 1, Min = 2;
             PowerCalculationConfigurationValidation.ValidateDatabaseDefinitions();        
@@ -1382,7 +1399,7 @@ namespace openHistorian
             customActionAdapterTable.AddNewOrUpdateRecord(avgFreqAdapter);            
         }
 
-        private Measurement[] GetCalculatedFrequencyMeasurements(int historianID)
+        private Measurement[] GetCalculatedFrequencyMeasurements(int? historianID)
         {
             SignalType freqSignalType = DataContext.Table<SignalType>().QueryRecordWhere("Acronym = 'FREQ'");
 

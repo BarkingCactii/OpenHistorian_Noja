@@ -21,6 +21,7 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using GSF.IO;
 using GSF.Web;
 using GSF.Web.Hosting;
@@ -95,9 +96,6 @@ namespace openHistorian
             HubConfiguration hubConfig = new HubConfiguration();
             HttpConfiguration httpConfig = new HttpConfiguration();
 
-            // Setup resolver for web page controller instances
-            httpConfig.DependencyResolver = WebPageController.GetDependencyResolver(WebServer.Default, Program.Host.DefaultWebPage, model, typeof(AppModel));
-
             // Make sure any hosted exceptions get propagated to service error handling
             httpConfig.Services.Replace(typeof(IExceptionHandler), new HostedExceptionHandler());
 
@@ -151,7 +149,7 @@ namespace openHistorian
             }
             catch (Exception ex)
             {
-                Program.Host.LogException(new InvalidOperationException($"Failed to initialize Grafana authenticated proxy controller: {ex.Message}", ex));
+                Program.Host.LogStatusMessage($"WARNING: Failed to initialize OSI-PI Grafana controller routes {ex.Message}", UpdateType.Warning);
             }
 
             // Map eDNA Grafana controller
@@ -165,7 +163,7 @@ namespace openHistorian
             }
             catch (Exception ex)
             {
-                Program.Host.LogException(new InvalidOperationException($"Failed to initialize Grafana authenticated proxy controller: {ex.Message}", ex));
+                Program.Host.LogStatusMessage($"WARNING: Failed to initialize eDNA Grafana controller routes: {ex.Message}", UpdateType.Warning);
             }
 
             // Map custom API controllers
@@ -201,6 +199,9 @@ namespace openHistorian
 
             // Load the WebPageController class and assign its routes
             app.UseWebApi(httpConfig);
+
+            // Setup resolver for web page controller instances
+            app.UseWebPageController(WebServer.Default, Program.Host.DefaultWebPage, model, typeof(AppModel), AuthenticationOptions);
 
             // Check for configuration issues before first request
             httpConfig.EnsureInitialized();
@@ -241,7 +242,7 @@ namespace openHistorian
             }
             catch (Exception ex)
             {
-                Program.Host.LogException(new SecurityException($"Failed to load OSIPIGrafanaController, validate DLL exists in program directory: {ex.Message}", ex));
+                Program.Host.LogStatusMessage($"WARNING: Failed to load OSI-PI Grafana controller, validate OSI-PI AFSDK is installed: {ex.Message}", UpdateType.Warning);
             }
         }
 
@@ -259,7 +260,7 @@ namespace openHistorian
             }
             catch (Exception ex)
             {
-                Program.Host.LogException(new SecurityException($"Failed to load eDNAGrafanaController, validate DLL exists in program directory: {ex.Message}", ex));
+                Program.Host.LogStatusMessage($"WARNING: Failed to load eDNA Grafana controller, validate eDNA DLL's exists in program directory: {ex.Message}", UpdateType.Warning);
             }
         }
 

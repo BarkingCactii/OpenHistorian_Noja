@@ -266,8 +266,10 @@
       </Component>
       
       <!-- Included Tag Templates -->
-      <Component Id="TagTemplates">
-        <File Id="Common.TagTemplate" Name="Common.TagTemplate" Source="$(var.openHistorian.ProjectDir)\Common.TagTemplate" />
+      <Component Id="TagTemplates" Guid="{EB8CD69A-E9F5-4183-805F-455D2E3AF654}">
+        <File Id="Full_Checkout_Calculations.TagTemplate" Name="Full Checkout Calculations.TagTemplate" Source="$(var.openHistorian.ProjectDir)\Full Checkout Calculations.TagTemplate" />
+        <File Id="Single_Phase_Power_Calculations.TagTemplate" Name="Single Phase Power Calculations.TagTemplate" Source="$(var.openHistorian.ProjectDir)\Single Phase Power Calculations.TagTemplate" />
+        <File Id="Three_Phase_Power_Calculations.TagTemplate" Name="Three Phase Power Calculations.TagTemplate" Source="$(var.openHistorian.ProjectDir)\Three Phase Power Calculations.TagTemplate" />
       </Component>
 
       <!-- Registry Settings -->
@@ -299,7 +301,7 @@
     <ComponentGroup Id="openHistorianComponents" Directory="INSTALLFOLDER">
       <Component Id="openHistorian">
         <File Id="openHistorian.exe" Name="$(var.openHistorian.TargetFileName)" Source="$(var.openHistorian.TargetPath)" />
-        <ServiceInstall Id="openHistorianService" Name="openHistorian" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Provides processing for streaming time-series data in real-time including phasor data concentration services for synchrophasor applications." />
+        <ServiceInstall Id="openHistorianService" Name="openHistorian" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Provides archive management and routing services for streaming time-series data in real-time for process applications." />
         <ServiceControl Id="openHistorianServiceControl" Name="openHistorian" Stop="both" Remove="uninstall" />
       </Component>
       <Component Id="openHistorianConfig" Permanent="yes">
@@ -633,6 +635,15 @@
       <Component Id="EzDNAServApiNet64">
         <File Id="EzDNAServApiNet64.dll" Name="EzDNAServApiNet64.dll" Source="$(var.GSF)\EzDNAServApiNet64.dll" />
       </Component>
+      <Component Id="AzureEventHubAdapters">
+        <File Id="AzureEventHubAdapters.dll" Name="AzureEventHubAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\AzureEventHubAdapters.dll" />
+      </Component>
+      <Component Id="Microsoft.Azure.Amqp">
+        <File Id="Microsoft.Azure.Amqp.dll" Name="Microsoft.Azure.Amqp.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Microsoft.Azure.Amqp.dll" />
+      </Component>
+      <Component Id="Microsoft.Azure.EventHubs">
+        <File Id="Microsoft.Azure.EventHubs.dll" Name="Microsoft.Azure.EventHubs.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Microsoft.Azure.EventHubs.dll" />
+      </Component>
     </ComponentGroup>
 
     <!-- BouncyCastle Dependencies -->
@@ -712,6 +723,9 @@
       </Component>
       <Component Id="System.Data.SQLite">
         <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.GSF)\System.Data.SQLite.dll" />
+      </Component>
+      <Component Id="sttp.gsf">
+        <File Id="sttp.gsf.dll" Name="sttp.gsf.dll" Source="$(var.SolutionDir)\Dependencies\GSF\sttp.gsf.dll" />
       </Component>
     </ComponentGroup>
 
