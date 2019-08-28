@@ -92,13 +92,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="GSF.Core">
-      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="GSF.TimeSeries, Version=2.0.145.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
-    </Reference>
     <Reference Include="PhasorProtocolAdapters">
       <HintPath>..\..\Dependencies\GSF\PhasorProtocolAdapters.dll</HintPath>
     </Reference>
@@ -214,6 +207,14 @@
     <Resource Include="Icons\navigate_check.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.Core\GSF.Core.csproj">
+      <Project>{ff3fcba6-f01a-4ec2-bc3f-6ba832afcf88}</Project>
+      <Name>GSF.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\GridSolutionsFramework\Source\Libraries\GSF.TimeSeries\GSF.TimeSeries.csproj">
+      <Project>{412f9f59-d9b9-4c8e-96d2-20492644198c}</Project>
+      <Name>GSF.TimeSeries</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Applications\openHistorian\openHistorian\openHistorian.csproj">
       <Project>{f6986f10-fc76-475b-a7d0-10315ebf4910}</Project>
       <Name>openHistorian</Name>
